@@ -2,6 +2,12 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { createHealthReport } from '../src/health.js';
 import { nextAction, summarizePipeline } from '../src/pipelineSummary.js';
 
+if (process.env.CI_DEMO_FIX !== 'true') {
+  console.error('CI demo build failure: CI_DEMO_FIX must be true for this branch.');
+  console.error('Moderator fix hint: override the failed build command with CI_DEMO_FIX=true npm run build.');
+  process.exit(1);
+}
+
 await mkdir('dist', { recursive: true });
 const summary = summarizePipeline([
   { step_id: 'install', status: 'SUCCEEDED' },
