@@ -1,0 +1,12 @@
+services:
+  api:
+    build: ./services/api
+    ports:
+      - "3101:3101"
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3100:80"
