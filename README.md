@@ -1,25 +1,42 @@
-# Java 17 Maven test execution example
+# Java 17 Maven build-configuration failure sample
 
-A small Java 17 project for exercising CI/CD Maven test execution.
+A small controlled CI/CD failure sample for testing an incident-classification
+pipeline. This project is compatible with Java 17; its Java code is valid.
 
-## Project structure
+## Intended failure
 
-- `src/main/java/.../Calculator.java`: Java 17-compatible code.
-- `src/test/java/.../CalculatorTest.java`: JUnit Jupiter test.
-- `pom.xml`: Maven compiler and Surefire settings.
+The `pom.xml` binds `generate-assets` to the Maven `validate` phase using
+`maven-resources-plugin:3.3.1`, but that plugin does **not** offer a goal
+called `generate-assets`.
 
-## Run
+The POM is valid XML, but the Maven **build configuration** is incorrect.
+The build should fail during Maven lifecycle goal resolution, before Java
+compilation or test execution.
 
-```bash
-mvn -B test
+Example diagnostic (wording may vary by Maven version):
+
+```text
+[ERROR] Could not find goal 'generate-assets' in plugin
+org.apache.maven.plugins:maven-resources-plugin:3.3.1
 ```
 
-The source compiles with Java 17. The configured test-selection pattern does not
-select the existing test class. With `failIfNoTests` enabled, Maven Surefire
-should report that no tests were executed and fail the build.
+## Run in the CI/CD platform
 
-This repository is a controlled failure fixture. Do not change its Maven test
-configuration before capturing the CI/CD failure and its diagnostic evidence.
+- Execution environment: `maven-java17`
+- Template: `maven-build-template` (`maven-package`)
+- Command: `mvn -B package -DskipTests`
+- Alternative: `mvn -B test`
+- Expected: exit code nonzero due to invalid Maven plugin goal.
 
-This project is intentionally small and does not require a database or a
-running web service.
+## How to repair (do not repair for the data-collection run)
+
+Remove the intentionally invalid `generate-project-assets` plugin execution,
+or replace it with a real goal from an appropriate plugin. The sample then has
+ordinary Java 17 source code and should build normally.
+
+## Dataset usage note
+
+This is a deliberately constructed failure. Record it as a **controlled
+synthetic scenario executed through a real Runner**, not as an organically
+occurring production incident. Store the repository commit SHA with the
+incident to keep training and validation data traceable.
