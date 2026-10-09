@@ -1,5 +1,5 @@
 {
-  "name": "node-runtime-version-mismatch",
+  "name": "node-docker-copy-path-failure",
   "version": "1.0.0",
   "private": true,
   "type": "module",
