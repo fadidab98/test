@@ -1,19 +1,19 @@
-# Java 17 unavailable dependency version experiment
+# Controlled missing React dependency experiment
 
-Controlled, intentionally induced failure for dataset diversity.
+Node 20+ and React static rendering; no Vite or JSX transpiler is required.
+Dataset provenance: intentionally induced missing dependency in a test repo.
 
-Run: mvn -B package -DskipTests
-Template: maven-build-template
-Environment: maven-java17
-Expected category: DEPENDENCY_FAILURE
+Install step: npm ci
+Build step: npm run build
+Expected: install succeeds; build fails with ERR_MODULE_NOT_FOUND for react.
+Expected category: DEPENDENCY_FAILURE.
 
-pom.xml requests org.apache.commons:commons-lang3 with the intentionally
-unavailable version 0.0.0-dataset-intentionally-unavailable. Source code is valid.
-Expected evidence: Could not resolve dependencies / Could not find artifact.
-No repository mirror or connectivity failure is configured.
+Source imports react and react-dom/server, but both packages are intentionally
+absent from package.json. A valid package-lock.json is included so missing
+lockfile is not the intended failure. The first missing import should be react.
+Review actual Runner logs before verifying a label.
 
-Review actual logs before assigning a category. Connection refused, timeout,
-or HTTP access failures instead indicate a different failure in the run.
-Do not treat the expected category as an observed result.
-
-Control: after recording the failed revision, replace the dependency version with an independently verified available version and rerun.
+After preserving the failed revision, a control run can add mutually compatible
+react and react-dom packages and update the lockfile, then rerun install/build.
+The project uses React.createElement and server-side static rendering to avoid
+introducing unrelated bundler, JSX, browser or test configuration failures.
