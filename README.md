@@ -1,47 +1,41 @@
-# Java 17 — Incompatible Types Compilation Failure
+# Java 17 — Surefire Test JVM Configuration Failure
 
-This is a **controlled CI/CD failure fixture** for collecting real Maven runner diagnostics. The repository intentionally contains a Java type error. Do not use it as production application code.
+A deliberately failing **Maven / JUnit 5** project for a controlled CI/CD failure-labeling dataset.
 
-## Environment
+## Expected classification
 
-- Maven project, Java 17 (`maven.compiler.release=17`)
-- No external application dependencies
-- Expected runner environment: `maven-java17`
-- Pipeline template: `maven-build-template`
-- Pipeline command: `mvn -B package -DskipTests`
+`TEST_CONFIGURATION_FAILURE` (taxonomy v1).
 
-## Intentional failure
+## Root cause
 
-`src/main/java/dev/cicd/samples/pricing/OrderRequest.java` exposes `String quantity()`.
+The Java source code and JUnit test are valid. However, `pom.xml` configures
+`maven-surefire-plugin` with an **invalid JVM option**:
 
-`src/main/java/dev/cicd/samples/pricing/OrderPricingService.java` tries to assign that text value directly to an `int`:
-
-```java
-int quantity = request.quantity();
+```xml
+<argLine>-XX:ThisIsNotARealJVMOption=1</argLine>
 ```
 
-Java does not implicitly convert a `String` to an `int`. Therefore the Maven compilation phase fails, typically with:
+Maven Surefire launches a separate JVM to run the test; that JVM rejects the
+invalid option and exits before the test can run. This is intentionally a
+**different failure mechanism** from the previous Surefire `includes` / "No
+tests were executed" example.
 
-```text
-[ERROR] incompatible types: String cannot be converted to int
-[INFO] BUILD FAILURE
-```
+## Running through the platform
 
-This failure is **not** caused by mismatched Java versions. Java 17 is sufficient. It is a source-code type incompatibility.
+- Runtime: `maven-java17`
+- Template: `maven-test-template`
+- Command: `mvn -B test`
+- Expected stage: **TEST** / Surefire test JVM startup
+- Expected symptom: `Unrecognized VM option 'ThisIsNotARealJVMOption=1'`
+  and/or `The forked VM terminated without properly saying goodbye`
+- Expected outcome: pipeline `FAILED`, `TEST_CONFIGURATION_FAILURE` as the
+  moderator-verified category after reviewing the run logs
 
-## Running this fixture in the CI/CD platform
+No production credentials, remote network failures, or infrastructure changes
+are required. Standard Maven Central access is used for dependencies.
 
-1. Push **the contents of this folder** to a new GitHub repository. `pom.xml` must be at the repository root.
-2. Register that repository as a new project in the platform.
-3. Generate/select a pipeline with the `maven-build-template` step, execution environment `maven-java17`.
-4. Execute `mvn -B package -DskipTests` through the actual runner.
-5. Inspect the Maven error excerpt, automatically created incident, and Ollama proposal.
-6. After assessing the evidence, let a moderator verify the category with a rationale. Do not solve/apply a fix during dataset collection.
+## If you want the project to succeed later
 
-## Ground-truth note (for experiment documentation only)
+Remove the deliberately invalid `<argLine>` from `pom.xml` and rerun.
 
-Target taxonomy category: `COMPILATION_FAILURE` (Taxonomy v1).
-Root cause: assignment of a `String` expression to an `int` variable in Java source code.
-This differs from the earlier `cannot find symbol` compilation sample, demonstrating **within-category diversity**.
-
-For ML experiments, **do not include this README, the intended category, or moderator notes as model input**. Model inputs should reflect only the evidence available when a failure originally occurred, and related variants of the same fixture must be kept together in train/test splits.
+**Dataset provenance:** intentionally induced failure in a controlled test repository.
