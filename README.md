@@ -1,37 +1,25 @@
-# Java 17 Maven compilation-failure sample
+# Java 17 Maven test execution example
 
-Small, self-contained repository for evaluating a CI/CD incident-classification pipeline.
+A small Java 17 project for exercising CI/CD Maven test execution.
 
-## Requirements
+## Project structure
 
-- JDK 17 (the project's configured source/target release)
-- Maven 3.8+ (or a compatible modern Maven 3.x)
+- `src/main/java/.../Calculator.java`: Java 17-compatible code.
+- `src/test/java/.../CalculatorTest.java`: JUnit Jupiter test.
+- `pom.xml`: Maven compiler and Surefire settings.
 
-## Run through your CI/CD platform
+## Run
 
-1. Push this repository to GitHub. Keep `pom.xml` at the repository root.
-2. Create a project in your CI/CD platform using the GitHub HTTPS URL.
-3. Run **Maven Test** using the **maven-java17** execution environment.
-4. The command is `mvn -B test`. Compilation will fail **before tests run**.
-5. Inspect the step's diagnostic excerpt and the moderator incident.
-
-### Expected diagnostic message
-
-```text
-[ERROR] ... cannot find symbol
-[ERROR]   symbol:   method totalCents()
-[ERROR]   location: variable invoice of type dev.cicd.samples.invoice.Invoice
-[INFO] BUILD FAILURE
+```bash
+mvn -B test
 ```
 
-## Why it fails
+The source compiles with Java 17. The configured test-selection pattern does not
+select the existing test class. With `failIfNoTests` enabled, Maven Surefire
+should report that no tests were executed and fail the build.
 
-`InvoiceService.amountDueCents()` calls `invoice.totalCents()`, but the `Invoice` class only exposes `calculateTotalCents()`. This is a Java source-code compilation error, **not a Java runtime-version mismatch**. The project's configured Java release is 17, which matches the intended runner profile.
+This repository is a controlled failure fixture. Do not change its Maven test
+configuration before capturing the CI/CD failure and its diagnostic evidence.
 
-This error is deliberate. Do not fix the source before collecting the failed run and recording a moderator-verified classification.
-
-## Optional repair (after collecting the failure)
-
-Change `invoice.totalCents()` to `invoice.calculateTotalCents()` in `InvoiceService.java`. Then `mvn -B test` should complete successfully in a correctly configured Java 17 + Maven environment (no tests are included).
-
-This project has no third-party Java dependencies or required external services.
+This project is intentionally small and does not require a database or a
+running web service.
