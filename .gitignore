@@ -1,4 +1,6 @@
 target/
-.cicd-lab-maven-cache/
+*.class
 .idea/
+.vscode/
 *.iml
+.DS_Store
