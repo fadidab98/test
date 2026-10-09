@@ -7,7 +7,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "node --check src/pricing.mjs"
-  },
+  "build": "node --check src/pricing.mjs",
+  "test": "node --test --this-test-option-does-not-exist"
+},
   "dependencies": {}
 }
