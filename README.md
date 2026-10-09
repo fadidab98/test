@@ -1,19 +1,19 @@
-# Controlled missing npm test script experiment
+# Controlled npm registry connectivity experiment
 
-Node.js with the built-in node:test runner; no external test packages.
-Dataset provenance: intentionally induced test configuration failure.
-Template: node-test-template (or the available template executing npm test)
+This is a registry metadata connectivity probe, not a React app build.
+Dataset provenance: intentionally induced npm registry connectivity failure.
+Template: node-build-template
 Environment: node-20
 Install: npm ci
-Test: npm test
-Expected category: TEST_CONFIGURATION_FAILURE
+Build: npm run build
+Expected category: NETWORK_OR_REGISTRY_FAILURE
 
-A valid test is present in test/pricing.test.mjs, but package.json deliberately
-omits the test script. Expected evidence: Missing script: "test".
-A valid lockfile is included and installation should succeed.
-The test itself passes when invoked with node --test.
-Review actual pipeline command and Runner logs before verifying the label.
-
-Control: after preserving the failed revision, add
-"test": "node --test" to scripts and rerun the same pipeline.
-This isolates missing test command configuration from test assertion failures.
+The build script asks npm for the react package version from an intentionally
+unreachable registry at http://127.0.0.1:65534/ inside the runner container.
+Expected evidence: ECONNREFUSED / connect ECONNREFUSED 127.0.0.1:65534.
+No service should listen on that port. The registry override is scoped to this
+one command; global npm settings and the install registry remain unchanged.
+Retries are disabled and the fetch timeout is limited to 3 seconds.
+There are no dependencies; a valid lockfile is included.
+Review actual Runner evidence before verifying the category.
+This is a controlled connectivity failure, not evidence of public registry outage.

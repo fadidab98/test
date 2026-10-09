@@ -1,5 +1,5 @@
 {
-  "name": "node-missing-test-script-failure",
+  "name": "node-registry-connectivity-failure",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -7,8 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
-  "build": "node --check src/pricing.mjs",
-  "test": "node --test --this-test-option-does-not-exist"
-},
+    "build": "npm view react version --registry=http://127.0.0.1:65534/ --fetch-retries=0 --fetch-timeout=3000"
+  },
   "dependencies": {}
 }
