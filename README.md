@@ -1,17 +1,18 @@
-# Controlled malformed Maven POM experiment
+# Controlled missing npm build script experiment
 
+Node.js project; no external packages are required.
 Dataset provenance: intentionally induced build configuration failure.
-Template: maven-build-template
-Environment: maven-java17
-Command: mvn -B package -DskipTests
+Template: node-build-template
+Environment: node-20
+Install: npm ci
+Build: npm run build
 Expected category: BUILD_CONFIGURATION_FAILURE
 
-The properties element is deliberately closed with </property> instead of
-</properties>. Maven should report Non-parseable POM / mismatched end tag
-before dependency resolution or source compilation.
-This is an XML syntax failure, unlike a well-formed POM missing artifactId.
-Review actual Runner evidence before verifying a label.
+package.json is valid JSON and defines start but deliberately omits build.
+Expected evidence: Missing script: "build".
+A valid package-lock.json is included; installation should succeed.
+This is a Node/npm configuration experiment, not a React rendering experiment.
+Review actual Runner evidence before verifying the label.
 
-Control: after preserving the failed revision, change </property> to
-</properties> and rerun the same command.
-No deployment, registry mirror or custom JVM settings are configured.
+Control: after preserving the failed revision, add the build script
+"build": "node src/app.mjs" and rerun the same install/build pipeline.
