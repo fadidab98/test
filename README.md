@@ -1,25 +1,19 @@
-# Java 17 Maven test execution example
+# Controlled missing npm test script experiment
 
-A small Java 17 project for exercising CI/CD Maven test execution.
+Node.js with the built-in node:test runner; no external test packages.
+Dataset provenance: intentionally induced test configuration failure.
+Template: node-test-template (or the available template executing npm test)
+Environment: node-20
+Install: npm ci
+Test: npm test
+Expected category: TEST_CONFIGURATION_FAILURE
 
-## Project structure
+A valid test is present in test/pricing.test.mjs, but package.json deliberately
+omits the test script. Expected evidence: Missing script: "test".
+A valid lockfile is included and installation should succeed.
+The test itself passes when invoked with node --test.
+Review actual pipeline command and Runner logs before verifying the label.
 
-- `src/main/java/.../Calculator.java`: Java 17-compatible code.
-- `src/test/java/.../CalculatorTest.java`: JUnit Jupiter test.
-- `pom.xml`: Maven compiler and Surefire settings.
-
-## Run
-
-```bash
-mvn -B test
-```
-
-The source compiles with Java 17. The configured test-selection pattern does not
-select the existing test class. With `failIfNoTests` enabled, Maven Surefire
-should report that no tests were executed and fail the build.
-
-This repository is a controlled failure fixture. Do not change its Maven test
-configuration before capturing the CI/CD failure and its diagnostic evidence.
-
-This project is intentionally small and does not require a database or a
-running web service.
+Control: after preserving the failed revision, add
+"test": "node --test" to scripts and rerun the same pipeline.
+This isolates missing test command configuration from test assertion failures.
