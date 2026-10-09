@@ -1,5 +1,5 @@
 {
-  "name": "node-docker-copy-path-failure",
+  "name": "node-docker-invalid-instruction-failure",
   "version": "1.0.0",
   "private": true,
   "type": "module",
