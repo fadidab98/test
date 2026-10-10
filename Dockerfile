@@ -1,2 +1,0 @@
-FROM scratch
-THIS_IS_NOT_A_DOCKERFILE_COMMAND broken
