@@ -1,4 +1,1 @@
-{
-  "runner": "node:test",
-  "include": ["tests/app.test.cjs"]
-}
+{ "runner": "node:test", "include": [ }

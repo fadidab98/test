@@ -1,7 +1,7 @@
 {
-  "scenario_id": "n09-build-missing-script",
-  "expected_category": "BUILD_CONFIGURATION_FAILURE",
-  "expected_stage": "node-build",
+  "scenario_id": "n10-test-invalid-json",
+  "expected_category": "TEST_CONFIGURATION_FAILURE",
+  "expected_stage": "node-test",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
   "note": "Expected labels are hypotheses. Verify against actual Runner evidence and record commit SHA."
