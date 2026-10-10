@@ -1,6 +1,4 @@
 {
   "runner": "node:test",
-  "include": [
-    "tests/MissingCard.test.js"
-  ]
+  "include": ["tests/GreetingCard.test.js"]
 }

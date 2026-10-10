@@ -1,7 +1,7 @@
 {
-  "scenario_id": "r10-test-missing-file",
-  "expected_category": "TEST_CONFIGURATION_FAILURE",
-  "expected_stage": "node-test",
+  "scenario_id": "r11-npm-missing-artifact",
+  "expected_category": "DEPENDENCY_FAILURE",
+  "expected_stage": "node-install",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
   "note": "This metadata is not automatically persisted in the platform dataset; review actual Runner evidence."
