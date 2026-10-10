@@ -1,7 +1,7 @@
 {
-  "scenario_id": "n07-runtime-engine",
-  "expected_category": "RUNTIME_MISMATCH",
-  "expected_stage": "node-install",
+  "scenario_id": "n08-build-missing-tsconfig",
+  "expected_category": "BUILD_CONFIGURATION_FAILURE",
+  "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
   "note": "Expected labels are hypotheses. Verify against actual Runner evidence and record commit SHA."
