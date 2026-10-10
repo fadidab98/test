@@ -1,7 +1,0 @@
-{
-  "active_scenario": "s18-java-syntax-error",
-  "expected_category": "COMPILATION_FAILURE",
-  "expected_stage": "maven-build",
-  "expected_error": "javac: ; expected",
-  "is_ground_truth_verified": false
-}
