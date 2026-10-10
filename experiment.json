@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s06-maven-invalid-plugin-goal",
+  "active_scenario": "s07-maven-invalid-javac-flag",
   "expected_category": "BUILD_CONFIGURATION_FAILURE",
   "expected_stage": "maven-build",
-  "expected_error": "Could not find goal generate-assets in plugin maven-resources-plugin",
+  "expected_error": "invalid flag: --not-a-real-javac-option",
   "is_ground_truth_verified": false
 }
