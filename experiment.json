@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s11-surefire-missing-javaagent",
-  "expected_category": "TEST_CONFIGURATION_FAILURE",
-  "expected_stage": "maven-test",
-  "expected_error": "Error opening zip file or JAR manifest missing: missing-test-agent.jar",
+  "active_scenario": "s12-maven-missing-dependency",
+  "expected_category": "DEPENDENCY_FAILURE",
+  "expected_stage": "maven-build",
+  "expected_error": "Could not find artifact spring-boot-starter-web:jar:99.99.99",
   "is_ground_truth_verified": false
 }
