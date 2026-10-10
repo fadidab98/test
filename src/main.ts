@@ -1,2 +1,2 @@
-const count: number = "not-a-number";
-console.log(count);
+import { getCount } from "./missing-helper";
+console.log(getCount());
