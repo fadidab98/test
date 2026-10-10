@@ -1,5 +1,5 @@
 {
-  "scenario_id": "n10-test-invalid-json",
+  "scenario_id": "n11-test-missing-file",
   "expected_category": "TEST_CONFIGURATION_FAILURE",
   "expected_stage": "node-test",
   "provenance": "CONTROLLED_INDUCED",
