@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s04-java-unreported-exception",
+  "active_scenario": "s05-java-variable-uninitialized",
   "expected_category": "COMPILATION_FAILURE",
   "expected_stage": "maven-build",
-  "expected_error": "unreported IOException; must be caught or declared to be thrown",
+  "expected_error": "variable value might not have been initialized",
   "is_ground_truth_verified": false
 }
