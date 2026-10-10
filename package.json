@@ -8,6 +8,9 @@
     "test": "node --test tests/app.test.js"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=20 <21"
+  },
+  "dependencies": {
+    "ml-lab-node24-only": "file:./fixtures/node24-only-package"
   }
 }
