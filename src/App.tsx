@@ -1,3 +1,3 @@
 import React from "react";
-import { MissingCard } from "./MissingCard";
-export function App() { return <main><MissingCard /></main>; }
+function formatCount(value: number) { return value.toFixed(0); }
+export function App() { return <main>{formatCount("five")}</main>; }

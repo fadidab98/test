@@ -1,5 +1,5 @@
 {
-  "scenario_id": "r02-ts2307-missing-component",
+  "scenario_id": "r03-ts2345-invalid-argument",
   "expected_category": "COMPILATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
