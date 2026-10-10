@@ -1,8 +1,8 @@
 {
-  "scenario_id": "n07-runtime-engine",
-  "expected_category": "RUNTIME_MISMATCH",
+  "scenario_id": "r01-ts2322-react-props",
+  "expected_category": "COMPILATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
-  "note": "Expected labels are hypotheses. Verify against actual Runner evidence and record commit SHA."
+  "note": "This metadata is not automatically persisted in the platform dataset; review actual Runner evidence."
 }

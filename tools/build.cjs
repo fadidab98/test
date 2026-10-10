@@ -2,22 +2,16 @@
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
-const tsc = path.join(root, 'node_modules', 'typescript', 'bin', 'tsc');
-const configuration = process.argv.includes('--tsconfig')
-  ? process.argv[process.argv.indexOf('--tsconfig') + 1]
-  : 'tsconfig.json';
-if (!configuration) {
-  console.error('Missing --tsconfig argument');
-  process.exit(2);
+const args = process.argv.slice(2);
+const configIndex = args.indexOf('--tsconfig');
+const tsconfig = configIndex === -1 ? 'tsconfig.json' : args[configIndex + 1];
+if (!tsconfig) { console.error('Missing --tsconfig value'); process.exit(2); }
+const tscPath = path.join(root, 'node_modules/typescript/bin/tsc');
+const vitePath = path.join(root, 'node_modules/vite/bin/vite.js');
+for (const [commandArgs, label] of [[[tscPath, '--project', tsconfig, '--noEmit'], 'TypeScript'], [[vitePath, 'build'], 'Vite']]) {
+  console.log(`[react-lab] ${label} build stage`);
+  const result = spawnSync(process.execPath, commandArgs, { cwd: root, stdio: 'inherit' });
+  if (result.error) throw result.error;
+  if (result.status !== 0) process.exit(result.status ?? 1);
 }
-const compile = spawnSync(process.execPath, [tsc, '--project', configuration, '--noEmit'], {
-  stdio: 'inherit', cwd: root
-});
-if (compile.error) throw compile.error;
-if (compile.status !== 0) process.exit(compile.status ?? 1);
-const source = path.join(root, 'src', 'app.cjs');
-const parsed = spawnSync(process.execPath, ['--check', source], { stdio: 'inherit', cwd: root });
-if (parsed.error) throw parsed.error;
-if (parsed.status !== 0) process.exit(parsed.status ?? 1);
-require(source);
-console.log('Node.js + TypeScript build succeeded');
+console.log('[react-lab] React + Vite production build succeeded');

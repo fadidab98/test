@@ -1,16 +1,24 @@
 {
-  "name": "node-ml-failure-lab",
-  "version": "2.0.0",
+  "name": "react-ml-failure-lab",
+  "version": "1.0.0",
   "private": true,
-  "description": "Controlled Node.js and TypeScript CI failure scenarios for ML training evidence",
+  "type": "module",
+  "description": "Controlled real React + Vite CI failures for reviewed ML training data",
   "scripts": {
-    "build": "node tools/build.cjs",
-    "test": "node tools/test-runner.cjs"
+    "test": "node tools/test-runner.cjs",
+    "build": "node tools/build.cjs"
   },
   "engines": {
     "node": ">=18 <24"
   },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
   "devDependencies": {
-    "typescript": "file:vendor/typescript-5.8.3.tgz"
+    "@types/react": "18.3.30",
+    "@types/react-dom": "18.3.7",
+    "typescript": "5.9.3",
+    "vite": "5.4.21"
   }
 }

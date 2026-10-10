@@ -1,7 +1,4 @@
 node_modules/
-.npm/
-*.log
-coverage/
 dist/
-.tmp/
 .DS_Store
+*.log

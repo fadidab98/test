@@ -3,136 +3,133 @@
     "id": "baseline",
     "expected_category": "BASELINE",
     "expected_stage": "all",
-    "description": "Control: npm ci, npm test, npm run build all succeed",
-    "kind": "none",
-    "notes": "Passing control. Does not create a failure sample."
+    "description": "Passing React/Vite control. Not a failure sample.",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n01-ts2322",
+    "id": "r01-ts2322-react-props",
     "expected_category": "COMPILATION_FAILURE",
     "expected_stage": "node-build",
-    "description": "TypeScript TS2322: string assigned to number",
-    "kind": "typescript",
-    "notes": "Run tsc; check exact TS2322 in build logs."
+    "description": "TS2322: number assigned a string in React TSX",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n02-ts2307",
+    "id": "r02-ts2307-missing-component",
     "expected_category": "COMPILATION_FAILURE",
     "expected_stage": "node-build",
-    "description": "TypeScript TS2307: local import module does not exist",
-    "kind": "typescript",
-    "notes": "Distinguish missing local module from npm package install failure."
+    "description": "TS2307: missing imported React component",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n03-ts2345",
+    "id": "r03-ts2345-invalid-argument",
     "expected_category": "COMPILATION_FAILURE",
     "expected_stage": "node-build",
-    "description": "TypeScript TS2345: wrong function argument type",
-    "kind": "typescript",
-    "notes": "Distinct compiler diagnostic from TS2322."
+    "description": "TS2345: invalid function argument",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n04-ts7006",
+    "id": "r04-ts7006-implicit-any",
     "expected_category": "COMPILATION_FAILURE",
     "expected_stage": "node-build",
-    "description": "TypeScript TS7006: implicit any under strict mode",
-    "kind": "typescript",
-    "notes": "Distinct strict typing failure."
+    "description": "TS7006: implicit any in component helper",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n05-npm-integrity",
-    "expected_category": "DEPENDENCY_FAILURE",
-    "expected_stage": "node-install",
-    "description": "npm EINTEGRITY: lockfile checksum does not match local TypeScript package",
-    "kind": "npm",
-    "notes": "Deliberately corrupted lockfile integrity only; vendor tarball stays intact, npm ci fails offline."
-  },
-  {
-    "id": "n06-npm-missing-tarball",
-    "expected_category": "DEPENDENCY_FAILURE",
-    "expected_stage": "node-install",
-    "description": "npm ENOENT: local file dependency tarball missing",
-    "kind": "npm",
-    "notes": "No public registry required for error."
-  },
-  {
-    "id": "n07-runtime-engine",
-    "expected_category": "RUNTIME_MISMATCH",
+    "id": "r05-ts2588-const-assignment",
+    "expected_category": "COMPILATION_FAILURE",
     "expected_stage": "node-build",
-    "description": "Build-time runtime mismatch: build tool requires Node >=22, while Node 20 is selected",
-    "kind": "runtime",
-    "notes": "Root package engines remains Node20-compatible so platform preflight passes; node-build fails with ERR_UNSUPPORTED_NODE_VERSION."
+    "description": "TS2588: reassignment to const",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n08-build-missing-tsconfig",
+    "id": "r06-vite-missing-entry",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "expected_stage": "node-build",
-    "description": "TypeScript TS5058: build selects nonexistent tsconfig",
-    "kind": "build",
-    "notes": "Must execute node-build stage."
+    "description": "Vite cannot resolve missing entry module",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n09-build-missing-script",
+    "id": "r07-build-missing-tsconfig",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "expected_stage": "node-build",
-    "description": "npm missing build:release script",
-    "kind": "build",
-    "notes": "Must execute node-build stage."
+    "description": "TS5058: referenced tsconfig does not exist",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n10-test-invalid-json",
+    "id": "r08-build-missing-script",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "expected_stage": "node-build",
+    "description": "npm cannot find build:release script",
+    "expected_category_is_verified": false
+  },
+  {
+    "id": "r09-test-invalid-json",
     "expected_category": "TEST_CONFIGURATION_FAILURE",
     "expected_stage": "node-test",
-    "description": "Malformed tests/test-settings.json",
-    "kind": "test",
-    "notes": "Invalid test runner configuration, not failing assertion."
+    "description": "Invalid JSON in tests/test-settings.json",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n11-test-missing-file",
+    "id": "r10-test-missing-file",
     "expected_category": "TEST_CONFIGURATION_FAILURE",
     "expected_stage": "node-test",
-    "description": "Test suite configured at missing file path",
-    "kind": "test",
-    "notes": "Real node:test missing test file error."
+    "description": "Configured test file does not exist",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n12-registry-connection-refused",
+    "id": "r11-npm-missing-artifact",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "expected_stage": "node-install",
+    "description": "npm ENOENT local tarball missing",
+    "expected_category_is_verified": false
+  },
+  {
+    "id": "r12-npm-integrity",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "expected_stage": "node-install",
+    "description": "npm EINTEGRITY react archive checksum mismatch",
+    "expected_category_is_verified": false
+  },
+  {
+    "id": "r13-registry-refused",
     "expected_category": "NETWORK_OR_REGISTRY_FAILURE",
     "expected_stage": "node-install",
-    "description": "npm fetch tarball from unavailable runner-local endpoint",
-    "kind": "network",
-    "notes": "127.0.0.1:9 is inside Runner, not the Windows host."
+    "description": "npm ECONNREFUSED runner-local artifact endpoint",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n13-docker-missing-copy",
+    "id": "r14-docker-missing-copy",
     "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
     "expected_stage": "docker-build",
-    "description": "Dockerfile COPY references nonexistent build-context path",
-    "kind": "docker",
-    "notes": "Enable Docker Build stage; not triggered in Node-only pipeline."
+    "description": "Docker COPY path absent",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n14-docker-invalid-directive",
+    "id": "r15-docker-invalid-command",
     "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
     "expected_stage": "docker-build",
-    "description": "Dockerfile uses unsupported instruction",
-    "kind": "docker",
-    "notes": "Enable Docker Build stage; not triggered in Node-only pipeline."
+    "description": "Invalid Dockerfile directive",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n15-ts2588",
-    "expected_category": "COMPILATION_FAILURE",
+    "id": "r16-build-tool-node22",
+    "expected_category": "RUNTIME_MISMATCH",
     "expected_stage": "node-build",
-    "description": "TypeScript TS2588: assign to const",
-    "kind": "typescript",
-    "notes": "Distinct compiler diagnostic."
+    "description": "React build tool requires Node 22; Runner uses Node 20",
+    "expected_category_is_verified": false
   },
   {
-    "id": "n16-build-unknown-tsc-flag",
+    "id": "r17-test-unsupported-runner",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "expected_stage": "node-test",
+    "description": "Unsupported runner configured: jest instead of node:test",
+    "expected_category_is_verified": false
+  },
+  {
+    "id": "r18-vite-broken-config-import",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "expected_stage": "node-build",
-    "description": "TypeScript compiler invoked with unknown CLI option TS5023",
-    "kind": "build",
-    "notes": "Compiler configuration error rather than source type error."
+    "description": "Vite config import refers to nonexistent local module",
+    "expected_category_is_verified": false
   }
 ]

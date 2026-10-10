@@ -1,104 +1,82 @@
-# Node.js + TypeScript ML Dataset Lab (scenario switcher)
+# React + Vite ML Failure Lab — 18 controlled scenarios
 
-A **dedicated test repository** for intentionally induced real Runner failures. This is **not** the DevOps platform source repository and must not be extracted over it. Work through **all Node scenarios first**, then move on to a separate React lab and later a Spring Boot lab.
+This is a **dedicated Git repository for controlled, real React pipeline failures**, not the DevOps platform source. Each activated scenario targets exactly one failure type, with a real failing `npm ci`, `npm test`, `npm run build` or optional Docker build. The scenario's expected label is **not ground truth** until a human checks actual Runner evidence.
 
-**16 independent failure scenarios + 1 passing baseline**, selected with `node tools/activate-scenario.mjs`. Activating any scenario first resets previously modified, lab-owned files to baseline. One failure is active per Git commit/pipeline run.
+## Baseline and repository setup
 
-## Setup — Windows Git Bash
-
-1. Extract the ZIP. Open the `node-ml-failure-lab` directory, or copy **its contents** into the root of a **dedicated GitHub test repository** (not a subfolder). The directory should contain `package.json`, `package-lock.json`, `src/`, `tests/`, `tools/`, `scenarios/`, and `vendor/`.
-2. Connect the test repository to your own GitHub remote (for a new repository):
-
-   ```bash
-   git init
-   git branch -M main
-   git remote add origin https://github.com/YOUR_ACCOUNT/YOUR_TEST_REPO.git
-   ```
-
-   If using your existing dedicated Node test repository, use its current branch and remote; do **not** repeat `git init` or change its remote. Back up unrelated test files before replacing them.
-3. Start with a passing control:
-
-   ```bash
-   node tools/activate-scenario.mjs --reset
-   npm ci
-   npm test
-   npm run build
-   git add -A
-   git commit -m "test: node baseline"
-   git push -u origin main  # first push ONLY for a new main branch
-   ```
-
-4. List all experiments: `node tools/activate-scenario.mjs --list`.
-5. Activate the first failure:
-
-   ```bash
-   node tools/activate-scenario.mjs n01-ts2322
-   git add -A
-   git commit -m "test: n01-ts2322"
-   git push                       # normal pushes after upstream is set
-   ```
-
-6. In your DevOps platform: ensure **repository URL and branch** match the pushed test repository; **re-analyze** if the platform caches repository fingerprints/plans; select `node-install`, `node-test`, and **`node-build`** stages (names may vary in your deployment); launch a **new pipeline run**. Confirm the actual failure stage and the redacted diagnostic log (e.g. `TS2322`), then review the classifier's proposed category and verify the label as a moderator **only when supported by evidence**.
-7. For the next case, run `node tools/activate-scenario.mjs n02-ts2307`, commit, push, and start a fresh pipeline. You do **not** need to manually reset between scenarios: activation always resets first. `--reset` returns to the passing baseline after the final scenario.
-
-**Important:** pushing the project to GitHub does **not** create dataset samples. A sample requires a real failed Runner execution, persisted Incident and evidence, and an explicitly reviewed category. `experiment.json` records the *expected* answer for the experiment operator; it is not a verified category in the ML dataset.
-
-## Scenarios (run in order; all Node.js/TypeScript)
-
-| ID | Expected category (not verified) | Expected stage | Real diagnostic |
-|---|---|---|---|
-| `n01-ts2322` | COMPILATION_FAILURE | node-build | `TS2322` incorrect variable type |
-| `n02-ts2307` | COMPILATION_FAILURE | node-build | `TS2307` nonexistent local import |
-| `n03-ts2345` | COMPILATION_FAILURE | node-build | `TS2345` invalid function argument type |
-| `n04-ts7006` | COMPILATION_FAILURE | node-build | `TS7006` implicit any in strict mode |
-| `n05-npm-integrity` | DEPENDENCY_FAILURE | node-install | npm `EINTEGRITY` wrong lockfile checksum |
-| `n06-npm-missing-tarball` | DEPENDENCY_FAILURE | node-install | npm `ENOENT` missing local package artifact |
-| `n07-runtime-engine` | RUNTIME_MISMATCH | node-install | npm `EBADENGINE` requires Node 24 (select Node 20) |
-| `n08-build-missing-tsconfig` | BUILD_CONFIGURATION_FAILURE | node-build | `TS5058` nonexistent tsconfig |
-| `n09-build-missing-script` | BUILD_CONFIGURATION_FAILURE | node-build | npm missing `build:release` script |
-| `n10-test-invalid-json` | TEST_CONFIGURATION_FAILURE | node-test | malformed runner configuration JSON |
-| `n11-test-missing-file` | TEST_CONFIGURATION_FAILURE | node-test | missing configured test suite |
-| `n12-registry-connection-refused` | NETWORK_OR_REGISTRY_FAILURE | node-install | npm `ECONNREFUSED` to runner-local `127.0.0.1:9` |
-| `n13-docker-missing-copy` | CONTAINER_CONFIGURATION_FAILURE | docker-build | `Dockerfile` COPY path missing |
-| `n14-docker-invalid-directive` | CONTAINER_CONFIGURATION_FAILURE | docker-build | unknown Dockerfile instruction |
-| `n15-ts2588` | COMPILATION_FAILURE | node-build | `TS2588` reassignment of const |
-| `n16-build-unknown-tsc-flag` | BUILD_CONFIGURATION_FAILURE | node-build | `TS5023` unknown compiler option |
-
-### Pipeline-stage rules
-
-- **Node install is first** (`npm ci`). Baseline packages are vendored: TypeScript 5.8.3 is bundled as a local `.tgz` in `vendor/` and referenced by lockfile, so normal install/test/build scenarios **do not need public npm registry access**. Its upstream license is included inside the package archive.
-- **Node test** is `npm test` using `node --test` and its `tests/test-settings.json` configuration. Build scenarios keep tests passing.
-- **Node build** is `npm run build` using the actual TypeScript compiler (`tsc --noEmit`) followed by Node source parsing. The compiler produces real `TS####` messages; no fake error text or artificially raised `Error('TS2322')` is used.
-- **N07** must run in the Node 20 environment; preflight/runtime selection may reject Node >=24 before the Runner. **Only count it if the real failure occurred where claimed.**
-- **N12** changes `.npmrc` to enable fetch and points one lockfile artifact to runner-local loopback port 9. It simulates an unreachable dependency artifact, **not a real external npm outage**; real logs should show `ECONNREFUSED`.
-- **N13 / N14** are optional Docker Build scenarios, **not Node build failures**. They require a selected Docker Build template and a working Docker builder. `FROM scratch` avoids pulling a base image, but platform security/engine restrictions may still prevent the build. If unavailable, **skip** them; do not create fake failures or labels.
-- The platform may auto-select only install and test; ensure **the intended step is present**. Always inspect the actual PipelinePlan before executing.
-- If your Runner has a different node execution image or a preset `NODE_ENV=production`, ensure `devDependencies` are installed: the build needs vendored TypeScript.
-
-## Dataset quality (important)
-
-- Set `provenance=CONTROLLED_INDUCED` and `scenario_group` using the actual dataset metadata mechanism **when available**. `experiment.json` does not persist this metadata by itself. The current dataset historically has 36 `UNKNOWN` provenance values; do not silently change past records.
-- Record the scenario ID, Git commit SHA, failure step, exact diagnostic, and the verified category in moderator notes. Do not verify the label solely because the catalog says so.
-- Every scenario is a genuine failed Runner attempt, but repeated runs of the same change are not independent new training examples. Distinct TypeScript compiler codes often share the same general class; a larger number alone does not prove model generalization.
-- Keep the saved `experimental-v1` model immutable. Accumulate a batch of verified samples, then create a separately versioned new model. Do not evaluate accuracy on training examples as if held out.
-- Never use the project repository ID, `expected_category`, scenario ID, or moderator notes as model features.
-
-## Useful commands
+1. Extract `react-ml-failure-lab/` into a **new, separate** test GitHub repository root.
+2. Commit/push on the branch configured in the platform. Use Node 20 in the Runner.
+3. The baseline uses **real React 18 + ReactDOM + Vite 5 + TypeScript**. The included `package-lock.json` is pinned from dependency metadata of the existing project. Dependencies are fetched from the public npm registry on first install: an accessible registry is required for the passing control (unlike our vendored TypeScript-only Node lab). Confirm baseline before injecting failures.
 
 ```bash
-node tools/activate-scenario.mjs --list
-node tools/activate-scenario.mjs --status
-node tools/activate-scenario.mjs n01-ts2322
 node tools/activate-scenario.mjs --reset
+npm ci
+npm test
+npm run build
+node tools/activate-scenario.mjs --list
+```
 
-# Baseline check only
-npm ci && npm test && npm run build
+If tests/build do not pass at baseline, STOP and fix the passing control first. Do not submit failed installation due to internet access as an intended compilation/test scenario.
 
-# New distinct scenario on SAME branch after prior commit
-node tools/activate-scenario.mjs n02-ts2307
+```bash
+# New repository only (skip these if Git is already initialized)
+git init
+git branch -M main
+git remote add origin https://github.com/YOUR_ACCOUNT/react-ml-failure-lab.git
+
 git add -A
-git commit -m "test: n02-ts2307"
+git commit -m "test: react baseline"
+git push -u origin main
+```
+
+## Why Repository Intelligence should detect tests
+
+`package.json` contains both `react` and `react-dom`, so it should detect the **REACT** framework. `tests/GreetingCard.test.js` is a genuine Node unit test for a React component rendered with `react-dom/server`. The `test` script in `package.json` enables **NODE_UNIT** detection. `npm test` exits immediately; it will not hang in watch mode.
+
+Expected baseline platform steps: `node-install` (`npm ci`), `node-test` (`npm test`), `node-build` (`npm run build`). Depending on platform pipeline composition, you may need to enable the build/test steps manually and **regenerate the plan**. Docker Build scenarios additionally require `docker-build` and a working Docker builder.
+
+## Each scenario
+
+```bash
+node tools/activate-scenario.mjs r01-ts2322-react-props
+git add -A
+git commit -m "test: r01-ts2322-react-props"
 git push
 ```
 
-`--reset` rewrites only these lab-owned files: `package.json`, `package-lock.json`, `.npmrc`, `src/main.ts`, `src/app.cjs`, `tests/test-settings.json`, `Dockerfile`, and `experiment.json`. It does not delete your Git history, `vendor/`, tests, or node_modules. Use this only in the dedicated test repository.
+Then re-analyze the pushed commit or refresh the locked Pipeline Plan, execute a **new Runner pipeline**, inspect the actual failed stage/logs, and verify the correct Failure Category as moderator. **No review notes required by the UI if optional**, but preserving the commit SHA and scenario ID separately is useful for research.
+
+For next experiment, directly activate next scenario; the activator restores all lab-owned files first. Do not run `--reset` after each scenario unless you need a passing baseline.
+
+## Experiments
+
+| ID | Expected classification (NOT VERIFIED) | Required step | Characteristic real diagnostic |
+|---|---|---|---|
+| `r01-ts2322-react-props` | `COMPILATION_FAILURE` | `node-build` | TS2322: number assigned a string in React TSX |
+| `r02-ts2307-missing-component` | `COMPILATION_FAILURE` | `node-build` | TS2307: missing imported React component |
+| `r03-ts2345-invalid-argument` | `COMPILATION_FAILURE` | `node-build` | TS2345: invalid function argument |
+| `r04-ts7006-implicit-any` | `COMPILATION_FAILURE` | `node-build` | TS7006: implicit any in component helper |
+| `r05-ts2588-const-assignment` | `COMPILATION_FAILURE` | `node-build` | TS2588: reassignment to const |
+| `r06-vite-missing-entry` | `BUILD_CONFIGURATION_FAILURE` | `node-build` | Vite cannot resolve missing entry module |
+| `r07-build-missing-tsconfig` | `BUILD_CONFIGURATION_FAILURE` | `node-build` | TS5058: referenced tsconfig does not exist |
+| `r08-build-missing-script` | `BUILD_CONFIGURATION_FAILURE` | `node-build` | npm cannot find build:release script |
+| `r09-test-invalid-json` | `TEST_CONFIGURATION_FAILURE` | `node-test` | Invalid JSON in tests/test-settings.json |
+| `r10-test-missing-file` | `TEST_CONFIGURATION_FAILURE` | `node-test` | Configured test file does not exist |
+| `r11-npm-missing-artifact` | `DEPENDENCY_FAILURE` | `node-install` | npm ENOENT local tarball missing |
+| `r12-npm-integrity` | `DEPENDENCY_FAILURE` | `node-install` | npm EINTEGRITY react archive checksum mismatch |
+| `r13-registry-refused` | `NETWORK_OR_REGISTRY_FAILURE` | `node-install` | npm ECONNREFUSED runner-local artifact endpoint |
+| `r14-docker-missing-copy` | `CONTAINER_CONFIGURATION_FAILURE` | `docker-build` | Docker COPY path absent |
+| `r15-docker-invalid-command` | `CONTAINER_CONFIGURATION_FAILURE` | `docker-build` | Invalid Dockerfile directive |
+| `r16-build-tool-node22` | `RUNTIME_MISMATCH` | `node-build` | React build tool requires Node 22; Runner uses Node 20 |
+| `r17-test-unsupported-runner` | `TEST_CONFIGURATION_FAILURE` | `node-test` | Unsupported runner configured: jest instead of node:test |
+| `r18-vite-broken-config-import` | `BUILD_CONFIGURATION_FAILURE` | `node-build` | Vite config import refers to nonexistent local module |
+
+
+## Research and safety boundaries
+
+- These are deliberately induced errors (`CONTROLLED_INDUCED`); the JSON file is local operator metadata **not automatically recorded** by the platform. If the dataset lacks provenance/scenario-group fields, do not claim they were stored. Do not treat related synthetic examples as independent generalization evidence.
+- If a scenario unexpectedly passes, verify the fresh Git commit, selected Runner stage, and plan before labeling it. Never verify a label from the scenario name alone.
+- Build scenarios: tests pass, build fails. Test configuration scenarios: install passes, test fails. Dependency/network scenarios: install fails. Container scenarios: normal Node steps pass, Docker build fails if selected. Runtime scenario r16: Node engines remain compatible; only the build tool checks Node >=22 inside the Node-20 runner.
+- The Docker scenarios require an actual builder. Do not force a Docker error from another step.
+- `--reset` only resets lab-owned package/config files and removes scenario Dockerfile. It does not touch `.git`, node_modules, README, or unrelated files.
+- Always keep the original experimental ML model version unchanged. Use new verified samples for later separate-version model training. For future ML-vs-RAG comparison, withhold related experiment groups from the evaluation set and RAG retrieval to avoid leakage.
