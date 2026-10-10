@@ -8,6 +8,6 @@
     "test": "node --test tests/app.test.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   }
 }
