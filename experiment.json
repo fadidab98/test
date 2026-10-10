@@ -1,5 +1,5 @@
 {
-  "scenario_id": "build-missing-nested-script",
+  "scenario_id": "build-wrong-entrypoint",
   "expected_category": "BUILD_CONFIGURATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
