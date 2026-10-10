@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s09-surefire-invalid-jvm-option",
+  "active_scenario": "s10-surefire-no-matching-tests",
   "expected_category": "TEST_CONFIGURATION_FAILURE",
   "expected_stage": "maven-test",
-  "expected_error": "Unrecognized VM option: ThisIsNotARealJVMOption",
+  "expected_error": "No tests were executed!",
   "is_ground_truth_verified": false
 }
