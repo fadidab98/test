@@ -1,2 +1,3 @@
 import React from "react";
-export function App() { const attempts: number = "two"; return <main>{attempts}</main>; }
+import { MissingCard } from "./MissingCard";
+export function App() { return <main><MissingCard /></main>; }

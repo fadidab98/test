@@ -1,5 +1,5 @@
 {
-  "scenario_id": "r01-ts2322-react-props",
+  "scenario_id": "r02-ts2307-missing-component",
   "expected_category": "COMPILATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
