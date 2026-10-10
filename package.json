@@ -5,7 +5,7 @@
   "description": "Controlled real CI failure scenarios for moderator-reviewed ML labels",
   "scripts": {
     "build": "node tools/build.cjs",
-    "test": "node --not-a-real-test-runner-option --test tests/app.test.js"
+    "test": "node --test tests/app.test.js"
   },
   "engines": {
     "node": ">=18"

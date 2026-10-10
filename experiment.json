@@ -1,7 +1,7 @@
 {
-  "scenario_id": "test-invalid-runner-flag",
-  "expected_category": "TEST_CONFIGURATION_FAILURE",
-  "expected_stage": "node-test",
+  "scenario_id": "compilation-syntax-token",
+  "expected_category": "COMPILATION_FAILURE",
+  "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
   "note": "Expected category is a hypothesis, NOT an independently verified label; review the actual runner evidence."
 }
