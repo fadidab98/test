@@ -1,3 +1,5 @@
 'use strict';
-const missing = require('missing-ml-lab-dependency');
-module.exports = { missing };
+function add(a, b) {
+  return a + b;
+}
+module.exports = { add };

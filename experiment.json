@@ -1,6 +1,6 @@
 {
-  "scenario_id": "dependency-missing-module",
-  "expected_category": "DEPENDENCY_FAILURE",
+  "scenario_id": "build-missing-nested-script",
+  "expected_category": "BUILD_CONFIGURATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
   "note": "Expected category is a hypothesis, NOT an independently verified label; review the actual runner evidence."

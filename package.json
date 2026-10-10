@@ -4,7 +4,7 @@
   "private": true,
   "description": "Controlled real CI failure scenarios for moderator-reviewed ML labels",
   "scripts": {
-    "build": "node tools/build.cjs",
+    "build": "npm run build:release",
     "test": "node --test tests/app.test.js"
   },
   "engines": {
