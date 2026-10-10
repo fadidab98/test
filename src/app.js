@@ -1,3 +1,4 @@
 'use strict';
-const broken = ;
-module.exports = { broken };
+function add(a, b) {
+  return a + b;
+// intentional unclosed function

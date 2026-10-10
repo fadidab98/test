@@ -1,5 +1,5 @@
 {
-  "scenario_id": "compilation-syntax-token",
+  "scenario_id": "compilation-unclosed-source",
   "expected_category": "COMPILATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
