@@ -1,7 +1,7 @@
 {
-  "scenario_id": "dependency-stale-lockfile",
+  "scenario_id": "dependency-missing-module",
   "expected_category": "DEPENDENCY_FAILURE",
-  "expected_stage": "node-install",
+  "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
   "note": "Expected category is a hypothesis, NOT an independently verified label; review the actual runner evidence."
 }
