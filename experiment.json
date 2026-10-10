@@ -1,7 +1,7 @@
 {
-  "scenario_id": "build-wrong-entrypoint",
-  "expected_category": "BUILD_CONFIGURATION_FAILURE",
-  "expected_stage": "node-build",
+  "scenario_id": "test-missing-suite",
+  "expected_category": "TEST_CONFIGURATION_FAILURE",
+  "expected_stage": "node-test",
   "provenance": "CONTROLLED_INDUCED",
   "note": "Expected category is a hypothesis, NOT an independently verified label; review the actual runner evidence."
 }
