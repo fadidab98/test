@@ -3,107 +3,152 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const catalog = JSON.parse(fs.readFileSync(path.join(root,'scenarios','catalog.json'),'utf8'));
-const name = process.argv[2];
-if (!name || ['-h','--help'].includes(name)) {
-  console.log('Use: node tools/activate-scenario.mjs --list');
-  console.log('     node tools/activate-scenario.mjs <scenario-id>');
-  console.log('     node tools/activate-scenario.mjs --reset');
-  process.exit(name ? 0 : 2);
-}
-if (name === '--list') {
-  for(const s of catalog) console.log(`${s.id.padEnd(32)} ${s.expected_category.padEnd(35)} ${s.expected_stage}`);
+const read = (name) => fs.readFileSync(path.join(root, name), 'utf8');
+const write = (name, value) => {
+  const file = path.join(root, name);
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, value, 'utf8');
+};
+const catalog = JSON.parse(read('scenarios/catalog.json'));
+const arg = process.argv[2];
+
+if (arg === '--list') {
+  for (const item of catalog) {
+    console.log(`${item.id.padEnd(35)} ${item.expected_category.padEnd(35)} ${item.expected_stage}`);
+  }
   process.exit(0);
 }
-const actualName = name === '--reset' ? 'baseline' : name;
-const chosen = catalog.find(s => s.id === actualName);
-if (!chosen) { console.error('Unknown scenario. See --list'); process.exit(2); }
+if (arg === '--status') {
+  console.log(read('experiment.json'));
+  process.exit(0);
+}
+if (!arg || arg === '--help' || arg === '-h') {
+  console.log('Usage: node tools/activate-scenario.mjs --list');
+  console.log('       node tools/activate-scenario.mjs --reset');
+  console.log('       node tools/activate-scenario.mjs <scenario-id>');
+  console.log('       node tools/activate-scenario.mjs --status');
+  process.exit(arg ? 0 : 2);
+}
+const id = arg === '--reset' ? 'baseline' : arg;
+const scenario = catalog.find((item) => item.id === id);
+if (!scenario) {
+  console.error(`Unknown scenario '${id}'. Run: node tools/activate-scenario.mjs --list`);
+  process.exit(2);
+}
+if (!fs.existsSync(path.join(root, '.lab-root'))) {
+  console.error('Lab marker missing. Activate scenarios only inside this dedicated test repository.');
+  process.exit(2);
+}
 
-const pkg = {
-  name:'devops-ml-failure-lab', version:'1.0.0', private:true,
-  description:'Controlled real CI failure scenarios for moderator-reviewed ML labels',
-  scripts:{build:'node tools/build.cjs',test:'node --test tests/app.test.js'},
-  engines:{node:'>=18'}
-};
-const lock = {
-  name:pkg.name,version:pkg.version,lockfileVersion:3,requires:true,
-  packages:{'':{name:pkg.name,version:pkg.version,engines:{node:'>=18'}}}
-};
-let npmrc = 'audit=false\nfund=false\n';
-let source = "'use strict';\nfunction add(a, b) {\n  return a + b;\n}\nmodule.exports = { add };\n";
+// This deliberately restores only OWNED test files. It never touches .git, docs,
+// arbitrary user files, vendor packages, or code in the DevOps platform repo.
+const ownedFiles = [
+  'package.json', 'package-lock.json', '.npmrc',
+  'src/main.ts', 'src/app.cjs', 'tests/test-settings.json',
+];
+for (const name of ownedFiles) {
+  write(name, read(`scenarios/base/${name}`));
+}
+fs.rmSync(path.join(root, 'Dockerfile'), { force: true });
+
+const pkg = JSON.parse(read('package.json'));
+const lock = JSON.parse(read('package-lock.json'));
+let ts = read('src/main.ts');
+let testConfig = read('tests/test-settings.json');
+let npmrc = read('.npmrc');
 let dockerfile = null;
-let dropLock = false;
 
-switch (actualName) {
-  case 'baseline': break;
-  case 'runtime-node24-engine':
+switch (id) {
+  case 'baseline':
+    break;
+  case 'n01-ts2322':
+    ts = 'const count: number = "not-a-number";\nconsole.log(count);\n';
+    break;
+  case 'n02-ts2307':
+    ts = 'import { getCount } from "./missing-helper";\nconsole.log(getCount());\n';
+    break;
+  case 'n03-ts2345':
+    ts = 'function double(value: number): number { return value * 2; }\nconsole.log(double("wrong-type"));\n';
+    break;
+  case 'n04-ts7006':
+    ts = 'export function normalize(value) { return String(value).trim(); }\n';
+    break;
+  case 'n05-npm-integrity':
+    // The real local TypeScript tarball stays untouched. Only its lockfile hash
+    // is changed, producing a deterministic npm EINTEGRITY failure.
+    lock.packages['node_modules/typescript'].integrity = 'sha512-' + 'A'.repeat(86) + '==';
+    break;
+  case 'n06-npm-missing-tarball':
+    pkg.dependencies = { 'scenario-missing-artifact': 'file:vendor/not-here-1.0.0.tgz' };
+    lock.packages[''].dependencies = { ...pkg.dependencies };
+    lock.packages['node_modules/scenario-missing-artifact'] = {
+      version: '1.0.0', resolved: 'file:vendor/not-here-1.0.0.tgz',
+    };
+    break;
+  case 'n07-runtime-engine':
     pkg.engines.node = '>=24';
     lock.packages[''].engines.node = '>=24';
     npmrc += 'engine-strict=true\n';
     break;
-  case 'runtime-openssl-md4':
-    pkg.scripts.build = 'node tools/legacy-openssl.cjs';
+  case 'n08-build-missing-tsconfig':
+    pkg.scripts.build = 'node tools/build.cjs --tsconfig tsconfig.missing.json';
     break;
-  case 'dependency-no-lockfile':
-    dropLock = true;
-    break;
-  case 'dependency-stale-lockfile':
-    pkg.dependencies = {'is-number':'7.0.0'}; // Lockfile intentionally not updated.
-    break;
-  case 'dependency-missing-module':
-    source = "'use strict';\nconst missing = require('missing-ml-lab-dependency');\nmodule.exports = { missing };\n";
-    break;
-  case 'build-missing-nested-script':
+  case 'n09-build-missing-script':
     pkg.scripts.build = 'npm run build:release';
     break;
-  case 'build-wrong-entrypoint':
-    pkg.scripts.build = 'node src/wrong-entrypoint.js';
+  case 'n10-test-invalid-json':
+    testConfig = '{ "runner": "node:test", "include": [ }\n';
     break;
-  case 'test-missing-suite':
-    pkg.scripts.test = 'node --test tests/nonexistent-test-file.test.js';
+  case 'n11-test-missing-file':
+    testConfig = JSON.stringify({ runner: 'node:test', include: ['tests/does-not-exist.test.cjs'] }, null, 2) + '\n';
     break;
-  case 'test-invalid-runner-flag':
-    pkg.scripts.test = 'node --not-a-real-test-runner-option --test tests/app.test.js';
-    break;
-  case 'compilation-syntax-token':
-    source = "'use strict';\nconst broken = ;\nmodule.exports = { broken };\n";
-    break;
-  case 'compilation-unclosed-source':
-    source = "'use strict';\nfunction add(a, b) {\n  return a + b;\n// intentional unclosed function\n";
-    break;
-  case 'network-unreachable-package':
-    pkg.dependencies = {'ml-lab-network-artifact':'1.0.0'};
+  case 'n12-registry-connection-refused':
+    pkg.dependencies = { 'scenario-network-artifact': '1.0.0' };
     lock.packages[''].dependencies = { ...pkg.dependencies };
-    lock.packages['node_modules/ml-lab-network-artifact'] = {
-      version:'1.0.0', resolved:'http://127.0.0.1:9/ml-lab-network-artifact-1.0.0.tgz'
+    lock.packages['node_modules/scenario-network-artifact'] = {
+      version: '1.0.0',
+      resolved: 'http://127.0.0.1:9/scenario-network-artifact-1.0.0.tgz',
     };
+    npmrc = npmrc.replace('offline=true', 'offline=false') + 'fetch-timeout=10000\n';
     break;
-  case 'container-missing-copy':
-    dockerfile = 'FROM scratch\nCOPY intentionally-missing-artifact.bin /app/build-artifact.bin\n';
+  case 'n13-docker-missing-copy':
+    dockerfile = 'FROM scratch\nCOPY file-that-does-not-exist.txt /app/missing.txt\n';
     break;
-  default: throw new Error('Scenario missing implementation: ' + actualName);
+  case 'n14-docker-invalid-directive':
+    dockerfile = 'FROM scratch\nTHIS_IS_NOT_A_DOCKERFILE_COMMAND broken\n';
+    break;
+  case 'n15-ts2588':
+    ts = 'const mode = "test";\nmode = "production";\nconsole.log(mode);\n';
+    break;
+  case 'n16-build-unknown-tsc-flag':
+    pkg.scripts.build = 'node node_modules/typescript/bin/tsc --unknownOption';
+    break;
+  default:
+    console.error('Scenario declared in catalog but not implemented:', id);
+    process.exit(2);
 }
 
-const write = (file,contents) => fs.writeFileSync(path.join(root,file),contents,'utf8');
-write('package.json', JSON.stringify(pkg,null,2)+'\n');
-if(dropLock) {
-  fs.rmSync(path.join(root,'package-lock.json'),{force:true});
-} else {
-  write('package-lock.json',JSON.stringify(lock,null,2)+'\n');
+write('package.json', JSON.stringify(pkg, null, 2) + '\n');
+write('package-lock.json', JSON.stringify(lock, null, 2) + '\n');
+write('.npmrc', npmrc);
+write('src/main.ts', ts);
+write('tests/test-settings.json', testConfig);
+if (dockerfile !== null) write('Dockerfile', dockerfile);
+write('experiment.json', JSON.stringify({
+  scenario_id: id,
+  expected_category: scenario.expected_category === 'BASELINE' ? null : scenario.expected_category,
+  expected_stage: scenario.expected_stage,
+  provenance: 'CONTROLLED_INDUCED',
+  expected_category_is_verified: false,
+  note: 'Expected labels are hypotheses. Verify against actual Runner evidence and record commit SHA.',
+}, null, 2) + '\n');
+
+console.log(`Activated ${id}`);
+console.log(`Expected failure category (UNVERIFIED): ${scenario.expected_category}`);
+console.log(`Required pipeline stage: ${scenario.expected_stage}`);
+console.log('Next: git add -A && git commit -m "test: ' + id + '" && git push');
+console.log('Then re-analyze/compose if required and launch a NEW pipeline run.');
+if (id.startsWith('n13-') || id.startsWith('n14-')) {
+  console.log('IMPORTANT: Docker Build must be explicitly selected and a Docker builder must be available.');
 }
-write('.npmrc',npmrc);
-write('src/app.js',source);
-if(dockerfile === null) fs.rmSync(path.join(root,'Dockerfile'),{force:true});
-else write('Dockerfile',dockerfile);
-write('experiment.json',JSON.stringify({
-  scenario_id:chosen.id,
-  expected_category:chosen.expected_category === 'BASELINE' ? null : chosen.expected_category,
-  expected_stage:chosen.expected_stage,
-  provenance:'CONTROLLED_INDUCED',
-  note:'Expected category is a hypothesis, NOT an independently verified label; review the actual runner evidence.'
-},null,2)+'\n');
-console.log(`Activated ${chosen.id} (${chosen.expected_category})`);
-console.log('Commit + push changed root files, then re-analyze the repository and start a NEW pipeline run.');
-console.log(`Expected pipeline stage: ${chosen.expected_stage}`);
-if(actualName==='container-missing-copy') console.log('Remember to enable/select the optional Docker Build step.');
-if(actualName==='runtime-node24-engine') console.log('Runtime preflight may block before Runner; check selected execution environment.');
+if (id === 'n07-runtime-engine') console.log('IMPORTANT: Select Node 20; a runtime preflight may block execution before Runner.');

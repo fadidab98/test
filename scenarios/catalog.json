@@ -2,99 +2,137 @@
   {
     "id": "baseline",
     "expected_category": "BASELINE",
-    "description": "Successful npm ci, npm test, npm run build",
     "expected_stage": "all",
-    "notes": "Control run, not a failure sample"
+    "description": "Control: npm ci, npm test, npm run build all succeed",
+    "kind": "none",
+    "notes": "Passing control. Does not create a failure sample."
   },
   {
-    "id": "runtime-node24-engine",
-    "expected_category": "RUNTIME_MISMATCH",
-    "description": "Node engine >=24 with engine-strict, triggers npm EBADENGINE under older Node",
-    "expected_stage": "node-install",
-    "notes": "May be stopped by platform runtime preflight if no compatible runner"
-  },
-  {
-    "id": "runtime-openssl-md4",
-    "expected_category": "RUNTIME_MISMATCH",
-    "description": "Legacy MD4 OpenSSL API fails on modern Node/OpenSSL",
-    "expected_stage": "node-build",
-    "notes": "Actual OpenSSL runtime compatibility failure"
-  },
-  {
-    "id": "dependency-no-lockfile",
-    "expected_category": "DEPENDENCY_FAILURE",
-    "description": "Missing package-lock.json blocks npm ci",
-    "expected_stage": "node-install",
-    "notes": "Real npm ci EUSAGE missing lockfile"
-  },
-  {
-    "id": "dependency-stale-lockfile",
-    "expected_category": "DEPENDENCY_FAILURE",
-    "description": "package.json depends on is-number but lockfile has not been updated",
-    "expected_stage": "node-install",
-    "notes": "Real npm ci out-of-sync lockfile error"
-  },
-  {
-    "id": "dependency-missing-module",
-    "expected_category": "DEPENDENCY_FAILURE",
-    "description": "Source requires a package not installed in the dependency graph",
-    "expected_stage": "node-build",
-    "notes": "Real MODULE_NOT_FOUND after npm ci; verify reviewer taxonomy"
-  },
-  {
-    "id": "build-missing-nested-script",
-    "expected_category": "BUILD_CONFIGURATION_FAILURE",
-    "description": "Build script calls nonexistent build:release npm script",
-    "expected_stage": "node-build",
-    "notes": "Real npm missing build script"
-  },
-  {
-    "id": "build-wrong-entrypoint",
-    "expected_category": "BUILD_CONFIGURATION_FAILURE",
-    "description": "Build script refers to nonexistent local entrypoint",
-    "expected_stage": "node-build",
-    "notes": "Real missing source entrypoint; reviewers must distinguish missing dependency"
-  },
-  {
-    "id": "test-missing-suite",
-    "expected_category": "TEST_CONFIGURATION_FAILURE",
-    "description": "Test configuration points to a nonexistent test file",
-    "expected_stage": "node-test",
-    "notes": "Real Node test runner cannot locate configured suite"
-  },
-  {
-    "id": "test-invalid-runner-flag",
-    "expected_category": "TEST_CONFIGURATION_FAILURE",
-    "description": "Test command contains invalid Node runner flag",
-    "expected_stage": "node-test",
-    "notes": "Real Node command-line test setup failure"
-  },
-  {
-    "id": "compilation-syntax-token",
+    "id": "n01-ts2322",
     "expected_category": "COMPILATION_FAILURE",
-    "description": "Syntax error in application source caught by node --check",
     "expected_stage": "node-build",
-    "notes": "Real JavaScript parser failure; confirm classification on review"
+    "description": "TypeScript TS2322: string assigned to number",
+    "kind": "typescript",
+    "notes": "Run tsc; check exact TS2322 in build logs."
   },
   {
-    "id": "compilation-unclosed-source",
+    "id": "n02-ts2307",
     "expected_category": "COMPILATION_FAILURE",
-    "description": "Unclosed JavaScript source block caught by node --check",
     "expected_stage": "node-build",
-    "notes": "Real JavaScript parser failure with a distinct source defect"
+    "description": "TypeScript TS2307: local import module does not exist",
+    "kind": "typescript",
+    "notes": "Distinguish missing local module from npm package install failure."
   },
   {
-    "id": "network-unreachable-package",
+    "id": "n03-ts2345",
+    "expected_category": "COMPILATION_FAILURE",
+    "expected_stage": "node-build",
+    "description": "TypeScript TS2345: wrong function argument type",
+    "kind": "typescript",
+    "notes": "Distinct compiler diagnostic from TS2322."
+  },
+  {
+    "id": "n04-ts7006",
+    "expected_category": "COMPILATION_FAILURE",
+    "expected_stage": "node-build",
+    "description": "TypeScript TS7006: implicit any under strict mode",
+    "kind": "typescript",
+    "notes": "Distinct strict typing failure."
+  },
+  {
+    "id": "n05-npm-integrity",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "expected_stage": "node-install",
+    "description": "npm EINTEGRITY: lockfile checksum does not match local TypeScript package",
+    "kind": "npm",
+    "notes": "Deliberately corrupted lockfile integrity only; vendor tarball stays intact, npm ci fails offline."
+  },
+  {
+    "id": "n06-npm-missing-tarball",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "expected_stage": "node-install",
+    "description": "npm ENOENT: local file dependency tarball missing",
+    "kind": "npm",
+    "notes": "No public registry required for error."
+  },
+  {
+    "id": "n07-runtime-engine",
+    "expected_category": "RUNTIME_MISMATCH",
+    "expected_stage": "node-install",
+    "description": "npm EBADENGINE: Node >=24 enforced on Node 20",
+    "kind": "npm",
+    "notes": "May be rejected by runtime preflight before reaching Runner."
+  },
+  {
+    "id": "n08-build-missing-tsconfig",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "expected_stage": "node-build",
+    "description": "TypeScript TS5058: build selects nonexistent tsconfig",
+    "kind": "build",
+    "notes": "Must execute node-build stage."
+  },
+  {
+    "id": "n09-build-missing-script",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "expected_stage": "node-build",
+    "description": "npm missing build:release script",
+    "kind": "build",
+    "notes": "Must execute node-build stage."
+  },
+  {
+    "id": "n10-test-invalid-json",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "expected_stage": "node-test",
+    "description": "Malformed tests/test-settings.json",
+    "kind": "test",
+    "notes": "Invalid test runner configuration, not failing assertion."
+  },
+  {
+    "id": "n11-test-missing-file",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "expected_stage": "node-test",
+    "description": "Test suite configured at missing file path",
+    "kind": "test",
+    "notes": "Real node:test missing test file error."
+  },
+  {
+    "id": "n12-registry-connection-refused",
     "expected_category": "NETWORK_OR_REGISTRY_FAILURE",
-    "description": "Lockfile package artifact URL points to unreachable runner-local TCP endpoint",
     "expected_stage": "node-install",
-    "notes": "Real ECONNREFUSED when npm fetches artifact; no public registry outage is simulated"
+    "description": "npm fetch tarball from unavailable runner-local endpoint",
+    "kind": "network",
+    "notes": "127.0.0.1:9 is inside Runner, not the Windows host."
   },
   {
-    "id": "container-missing-copy",
+    "id": "n13-docker-missing-copy",
     "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
-    "description": "Dockerfile COPY points to missing build-context file",
     "expected_stage": "docker-build",
-    "notes": "Requires selecting Docker Build in pipeline and a functioning Docker builder"
+    "description": "Dockerfile COPY references nonexistent build-context path",
+    "kind": "docker",
+    "notes": "Enable Docker Build stage; not triggered in Node-only pipeline."
+  },
+  {
+    "id": "n14-docker-invalid-directive",
+    "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+    "expected_stage": "docker-build",
+    "description": "Dockerfile uses unsupported instruction",
+    "kind": "docker",
+    "notes": "Enable Docker Build stage; not triggered in Node-only pipeline."
+  },
+  {
+    "id": "n15-ts2588",
+    "expected_category": "COMPILATION_FAILURE",
+    "expected_stage": "node-build",
+    "description": "TypeScript TS2588: assign to const",
+    "kind": "typescript",
+    "notes": "Distinct compiler diagnostic."
+  },
+  {
+    "id": "n16-build-unknown-tsc-flag",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "expected_stage": "node-build",
+    "description": "TypeScript compiler invoked with unknown CLI option TS5023",
+    "kind": "build",
+    "notes": "Compiler configuration error rather than source type error."
   }
 ]

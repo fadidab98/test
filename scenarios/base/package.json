@@ -1,0 +1,16 @@
+{
+  "name": "node-ml-failure-lab",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Controlled Node.js and TypeScript CI failure scenarios for ML training evidence",
+  "scripts": {
+    "build": "node tools/build.cjs",
+    "test": "node tools/test-runner.cjs"
+  },
+  "engines": {
+    "node": ">=18 <24"
+  },
+  "devDependencies": {
+    "typescript": "file:vendor/typescript-5.8.3.tgz"
+  }
+}

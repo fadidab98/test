@@ -1,16 +1,16 @@
 {
-  "name": "devops-ml-failure-lab",
-  "version": "1.0.0",
+  "name": "node-ml-failure-lab",
+  "version": "2.0.0",
   "private": true,
-  "description": "Controlled real CI failure scenarios for moderator-reviewed ML labels",
+  "description": "Controlled Node.js and TypeScript CI failure scenarios for ML training evidence",
   "scripts": {
     "build": "node tools/build.cjs",
-    "test": "node --test tests/app.test.js"
+    "test": "node tools/test-runner.cjs"
   },
   "engines": {
-    "node": ">=20 <21"
+    "node": ">=18 <24"
   },
-  "dependencies": {
-    "ml-lab-node24-only": "file:./fixtures/node24-only-package"
+  "devDependencies": {
+    "typescript": "file:vendor/typescript-5.8.3.tgz"
   }
 }

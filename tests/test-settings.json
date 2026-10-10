@@ -1,0 +1,4 @@
+{
+  "runner": "node:test",
+  "include": ["tests/app.test.cjs"]
+}

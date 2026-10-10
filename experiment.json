@@ -1,6 +1,8 @@
 {
-  "scenario_id": "runtime-node24-dependency",
-  "expected_category": "RUNTIME_MISMATCH",
-  "expected_stage": "node-install",
-  "provenance": "CONTROLLED_INDUCED"
+  "scenario_id": "n01-ts2322",
+  "expected_category": "COMPILATION_FAILURE",
+  "expected_stage": "node-build",
+  "provenance": "CONTROLLED_INDUCED",
+  "expected_category_is_verified": false,
+  "note": "Expected labels are hypotheses. Verify against actual Runner evidence and record commit SHA."
 }
