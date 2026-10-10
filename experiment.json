@@ -1,7 +1,7 @@
 {
-  "scenario_id": "r13-registry-refused",
-  "expected_category": "NETWORK_OR_REGISTRY_FAILURE",
-  "expected_stage": "node-install",
+  "scenario_id": "r14-docker-missing-copy",
+  "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+  "expected_stage": "docker-build",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
   "note": "This metadata is not automatically persisted in the platform dataset; review actual Runner evidence."
