@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s15-docker-missing-copy",
+  "active_scenario": "s16-docker-invalid-instruction",
   "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
   "expected_stage": "docker-build",
-  "expected_error": "COPY missing-spring-app.jar: not found",
+  "expected_error": "unknown instruction: INVALID_SPRING_DOCKER_COMMAND",
   "is_ground_truth_verified": false
 }

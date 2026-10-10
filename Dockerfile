@@ -1,4 +1,3 @@
 FROM eclipse-temurin:17-jre
+INVALID_SPRING_DOCKER_COMMAND true
 WORKDIR /app
-COPY missing-spring-app.jar /app/app.jar
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
