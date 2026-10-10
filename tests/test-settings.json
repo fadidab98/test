@@ -1,6 +1,4 @@
 {
   "runner": "node:test",
-  "include": [
-    "tests/does-not-exist.test.cjs"
-  ]
+  "include": ["tests/app.test.cjs"]
 }

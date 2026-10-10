@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "typescript": "file:vendor/typescript-5.8.3.tgz"
+  },
+  "dependencies": {
+    "scenario-network-artifact": "1.0.0"
   }
 }

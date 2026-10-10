@@ -1,7 +1,7 @@
 {
-  "scenario_id": "n11-test-missing-file",
-  "expected_category": "TEST_CONFIGURATION_FAILURE",
-  "expected_stage": "node-test",
+  "scenario_id": "n12-registry-connection-refused",
+  "expected_category": "NETWORK_OR_REGISTRY_FAILURE",
+  "expected_stage": "node-install",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
   "note": "Expected labels are hypotheses. Verify against actual Runner evidence and record commit SHA."
