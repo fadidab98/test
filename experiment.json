@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s17-build-requires-java21",
-  "expected_category": "RUNTIME_MISMATCH",
+  "active_scenario": "s18-java-syntax-error",
+  "expected_category": "COMPILATION_FAILURE",
   "expected_stage": "maven-build",
-  "expected_error": "Maven Enforcer requires Java >=21; Runner Java 17",
+  "expected_error": "javac: ; expected",
   "is_ground_truth_verified": false
 }
