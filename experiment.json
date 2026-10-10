@@ -1,7 +1,7 @@
 {
-  "scenario_id": "r15-docker-invalid-command",
-  "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
-  "expected_stage": "docker-build",
+  "scenario_id": "r16-build-tool-node22",
+  "expected_category": "RUNTIME_MISMATCH",
+  "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
   "note": "This metadata is not automatically persisted in the platform dataset; review actual Runner evidence."
