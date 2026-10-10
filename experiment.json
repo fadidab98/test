@@ -1,6 +1,6 @@
 {
-  "scenario_id": "n15-ts2588",
-  "expected_category": "COMPILATION_FAILURE",
+  "scenario_id": "n16-build-unknown-tsc-flag",
+  "expected_category": "BUILD_CONFIGURATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,

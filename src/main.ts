@@ -1,3 +1,5 @@
-const mode = "test";
-mode = "production";
-console.log(mode);
+export function formatJobs(count: number): string {
+  return `Completed jobs: ${count}`;
+}
+const jobs: number = 2;
+console.log(formatJobs(jobs));
