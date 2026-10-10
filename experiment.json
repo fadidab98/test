@@ -1,6 +1,6 @@
 {
-  "scenario_id": "r12-npm-integrity",
-  "expected_category": "DEPENDENCY_FAILURE",
+  "scenario_id": "r13-registry-refused",
+  "expected_category": "NETWORK_OR_REGISTRY_FAILURE",
   "expected_stage": "node-install",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
