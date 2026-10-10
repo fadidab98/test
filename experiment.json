@@ -1,5 +1,5 @@
 {
-  "scenario_id": "n02-ts2307",
+  "scenario_id": "n03-ts2345",
   "expected_category": "COMPILATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
