@@ -1,2 +1,2 @@
 FROM scratch
-COPY file-that-does-not-exist.txt /app/missing.txt
+THIS_IS_NOT_A_DOCKERFILE_COMMAND broken
