@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s14-maven-registry-refused",
-  "expected_category": "NETWORK_OR_REGISTRY_FAILURE",
-  "expected_stage": "maven-build",
-  "expected_error": "Connection refused to Maven mirror 127.0.0.1:65534",
+  "active_scenario": "s15-docker-missing-copy",
+  "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+  "expected_stage": "docker-build",
+  "expected_error": "COPY missing-spring-app.jar: not found",
   "is_ground_truth_verified": false
 }
