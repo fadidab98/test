@@ -1,5 +1,5 @@
 {
-  "scenario_id": "dependency-no-lockfile",
+  "scenario_id": "dependency-stale-lockfile",
   "expected_category": "DEPENDENCY_FAILURE",
   "expected_stage": "node-install",
   "provenance": "CONTROLLED_INDUCED",
