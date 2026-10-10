@@ -1,3 +1,0 @@
-FROM eclipse-temurin:17-jre
-INVALID_SPRING_DOCKER_COMMAND true
-WORKDIR /app

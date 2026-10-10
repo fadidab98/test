@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s16-docker-invalid-instruction",
-  "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
-  "expected_stage": "docker-build",
-  "expected_error": "unknown instruction: INVALID_SPRING_DOCKER_COMMAND",
+  "active_scenario": "s17-build-requires-java21",
+  "expected_category": "RUNTIME_MISMATCH",
+  "expected_stage": "maven-build",
+  "expected_error": "Maven Enforcer requires Java >=21; Runner Java 17",
   "is_ground_truth_verified": false
 }
