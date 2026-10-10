@@ -1,3 +1,6 @@
-import React from "react";
-function describeFailure(value) { return String(value); }
-export function App() { return <main>{describeFailure(1)}</main>; }
+import React from 'react';
+import { GreetingCard } from './GreetingCard.js';
+
+export function App() {
+  return <main><GreetingCard name="CI/CD React Lab" /></main>;
+}
