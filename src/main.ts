@@ -1,1 +1,5 @@
-export function normalize(value) { return String(value).trim(); }
+export function formatJobs(count: number): string {
+  return `Completed jobs: ${count}`;
+}
+const jobs: number = 2;
+console.log(formatJobs(jobs));
