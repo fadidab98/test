@@ -1,4 +1,5 @@
-node_modules/
-dist/
+target/
+.cicd-lab-maven-cache/
+.idea/
+*.iml
 .DS_Store
-*.log

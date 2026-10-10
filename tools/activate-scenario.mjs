@@ -1,104 +1,57 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const local = name => path.join(root, name);
-const read = name => fs.readFileSync(local(name), 'utf8');
-const write = (name, value) => {fs.mkdirSync(path.dirname(local(name)),{recursive:true});fs.writeFileSync(local(name),value,'utf8');};
-const catalog = JSON.parse(read('scenarios/catalog.json'));
-const arg = process.argv[2];
-if (arg === '--list') {
- for (const x of catalog) console.log(x.id.padEnd(39), x.expected_category.padEnd(35), x.expected_stage);
- process.exit(0);
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const at=rel=>path.join(root,rel);
+const read=rel=>fs.readFileSync(at(rel),'utf8');
+const write=(rel,val)=>{fs.mkdirSync(path.dirname(at(rel)),{recursive:true});fs.writeFileSync(at(rel),val,'utf8');};
+const catalog=JSON.parse(read('scenarios/catalog.json'));
+const arg=process.argv[2];
+if(arg==='--list'){for(const s of catalog)console.log(s.id.padEnd(38),s.expected_category.padEnd(34),s.expected_stage);process.exit(0);}
+if(arg==='--status'){console.log(read('experiment.json'));process.exit(0);}
+if(!arg || arg==='--help'){console.log('node tools/activate-scenario.mjs (--list|--status|--reset|<scenario-id>)');process.exit(arg?0:2);}
+const id=arg==='--reset'?'baseline':arg;
+const scenario=catalog.find(s=>s.id===id);
+if(!scenario){console.error('Unknown scenario:',id);process.exit(2);}
+if(!fs.existsSync(at('.lab-root')) || read('.lab-root').trim()!=='SPRING_BOOT_FAILURE_LAB_ONLY'){
+ console.error('Not in dedicated Spring Boot lab');process.exit(2);
 }
-if (arg === '--status') { console.log(read('experiment.json')); process.exit(0); }
-if (!arg || arg === '--help' || arg === '-h') {
- console.log('Usage: node tools/activate-scenario.mjs (--list|--status|--reset|<scenario-id>)');
- process.exit(arg ? 0 : 2);
+for(const f of ['pom.xml','src/main/java/dev/cicd/lab/FailureProbe.java','.mvn/maven.config'])write(f,read('scenarios/base/'+f));
+for(const f of ['Dockerfile','.mvn/settings.xml'])fs.rmSync(at(f),{force:true});
+let pom=read('pom.xml');
+let probe=read('src/main/java/dev/cicd/lab/FailureProbe.java');
+const setProbe=b=>{probe=`package dev.cicd.lab;\npublic final class FailureProbe {\n private FailureProbe() {}\n public static String check(){ ${b} }\n}\n`;};
+const addPlugin=b=>{pom=pom.replace('  </plugins></build>',b+'\n  </plugins></build>');};
+const updatePlugin=(name,fragment)=>{
+ const marker=`<artifactId>${name}</artifactId><version>${name==='maven-surefire-plugin'?'3.2.5':'3.13.0'}</version>`;
+ if(!pom.includes(marker))throw new Error('Baseline plugin marker not found');
+ pom=pom.replace(marker,marker+fragment);
+};
+switch(id){
+ case 'baseline':break;
+ case 's01-java-cannot-find-symbol':setProbe('return missingVariable;');break;
+ case 's02-java-incompatible-types':setProbe('String name=42;return name;');break;
+ case 's03-java-missing-package':probe='package dev.cicd.lab;\nimport dev.cicd.missing.MissingClient;\npublic final class FailureProbe{public static String check(){return MissingClient.name();}}\n';break;
+ case 's04-java-unreported-exception':setProbe('java.nio.file.Files.readString(java.nio.file.Path.of("README.md"));return "ok";');break;
+ case 's05-java-variable-uninitialized':setProbe('String value;if(System.nanoTime()<0L)value="never";return value;');break;
+ case 's06-maven-invalid-plugin-goal':addPlugin('<plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-resources-plugin</artifactId><version>3.3.1</version><executions><execution><id>invalid-goal</id><phase>validate</phase><goals><goal>generate-assets</goal></goals></execution></executions></plugin>');break;
+ case 's07-maven-invalid-javac-flag':updatePlugin('maven-compiler-plugin','<configuration><compilerArgs><arg>--not-a-real-javac-option</arg></compilerArgs></configuration>');break;
+ case 's08-maven-invalid-release':pom=pom.replace('<maven.compiler.release>17</maven.compiler.release>','<maven.compiler.release>bogus</maven.compiler.release>');break;
+ case 's09-surefire-invalid-jvm-option':updatePlugin('maven-surefire-plugin','<configuration><argLine>-XX:ThisIsNotARealJVMOption=1</argLine><forkCount>1</forkCount><reuseForks>false</reuseForks></configuration>');break;
+ case 's10-surefire-no-matching-tests':updatePlugin('maven-surefire-plugin','<configuration><includes><include>**/NoSuchTestInSpringLab.java</include></includes><failIfNoTests>true</failIfNoTests></configuration>');break;
+ case 's11-surefire-missing-javaagent':updatePlugin('maven-surefire-plugin','<configuration><argLine>-javaagent:${project.basedir}/vendor/missing-test-agent.jar</argLine><forkCount>1</forkCount><reuseForks>false</reuseForks></configuration>');break;
+ case 's12-maven-missing-dependency':pom=pom.replace('<artifactId>spring-boot-starter-web</artifactId>','<artifactId>spring-boot-starter-web</artifactId><version>99.99.99</version>');break;
+ case 's13-maven-missing-local-jar':pom=pom.replace('  </dependencies>','<dependency><groupId>dev.cicd.lab</groupId><artifactId>local-missing-jar</artifactId><version>1.0.0</version><scope>system</scope><systemPath>${project.basedir}/vendor/never-built.jar</systemPath></dependency>\n  </dependencies>');break;
+ case 's14-maven-registry-refused':
+  write('.mvn/maven.config','--batch-mode\n--no-transfer-progress\n--settings=.mvn/settings.xml\n-Dmaven.repo.local=.cicd-lab-maven-cache\n');
+  write('.mvn/settings.xml','<?xml version="1.0" encoding="UTF-8"?>\n<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"><mirrors><mirror><id>lab-unreachable</id><url>http://127.0.0.1:65534/maven2/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>\n');break;
+ case 's15-docker-missing-copy':write('Dockerfile','FROM eclipse-temurin:17-jre\nWORKDIR /app\nCOPY missing-spring-app.jar /app/app.jar\nENTRYPOINT ["java", "-jar", "/app/app.jar"]\n');break;
+ case 's16-docker-invalid-instruction':write('Dockerfile','FROM eclipse-temurin:17-jre\nINVALID_SPRING_DOCKER_COMMAND true\nWORKDIR /app\n');break;
+ case 's17-build-requires-java21':addPlugin('<plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-enforcer-plugin</artifactId><version>3.5.0</version><executions><execution><id>requires-java21-inside-runner</id><phase>validate</phase><goals><goal>enforce</goal></goals><configuration><rules><requireJavaVersion><version>[21,)</version><message>RUNTIME_MISMATCH: Build helper requires Java 21 but runner uses Java 17</message></requireJavaVersion></rules><fail>true</fail></configuration></execution></executions></plugin>');break;
+ case 's18-java-syntax-error':setProbe('int count=3 return "count="+count;');break;
+ default:throw Error('Missing handler for '+id);
 }
-const id = arg === '--reset' ? 'baseline' : arg;
-const scenario = catalog.find(x => x.id === id);
-if (!scenario) { console.error(`Unknown scenario: ${id}. Run --list`); process.exit(2); }
-if (!fs.existsSync(local('.lab-root')) || read('.lab-root').trim() !== 'REACT_FAILURE_LAB_ONLY') {
- console.error('Not in the dedicated React test repository. No changes made.'); process.exit(2);
-}
-// Each scenario resets only lab-owned files; unrelated files, .git, and dependencies are untouched.
-const owned = ['package.json','package-lock.json','.npmrc','src/App.tsx',
- 'tests/test-settings.json','index.html','vite.config.mjs'];
-for (const name of owned) write(name, read(`scenarios/base/${name}`));
-fs.rmSync(local('Dockerfile'),{force:true});
-const pkg = JSON.parse(read('package.json'));
-const lock = JSON.parse(read('package-lock.json'));
-let app = read('src/App.tsx');
-let index = read('index.html');
-let testConfig = read('tests/test-settings.json');
-let npmrc = read('.npmrc');
-let viteConfig = read('vite.config.mjs');
-let dockerfile = null;
-const setSource = body => { app = body + '\n'; };
-switch (id) {
- case 'baseline': break;
- case 'r01-ts2322-react-props':
-   setSource('import React from "react";\nexport function App() { const attempts: number = "two"; return <main>{attempts}</main>; }'); break;
- case 'r02-ts2307-missing-component':
-   setSource('import React from "react";\nimport { MissingCard } from "./MissingCard";\nexport function App() { return <main><MissingCard /></main>; }'); break;
- case 'r03-ts2345-invalid-argument':
-   setSource('import React from "react";\nfunction formatCount(value: number) { return value.toFixed(0); }\nexport function App() { return <main>{formatCount("five")}</main>; }'); break;
- case 'r04-ts7006-implicit-any':
-   setSource('import React from "react";\nfunction describeFailure(value) { return String(value); }\nexport function App() { return <main>{describeFailure(1)}</main>; }'); break;
- case 'r05-ts2588-const-assignment':
-   setSource('import React from "react";\nexport function App() { const category = "BUILD"; category = "TEST"; return <main>{category}</main>; }'); break;
- case 'r06-vite-missing-entry':
-   index = index.replace('/src/main.tsx','/src/entry-does-not-exist.tsx'); break;
- case 'r07-build-missing-tsconfig':
-   pkg.scripts.build = 'node tools/build.cjs --tsconfig tsconfig.missing.json'; break;
- case 'r08-build-missing-script':
-   pkg.scripts.build = 'npm run build:release'; break;
- case 'r09-test-invalid-json':
-   testConfig = '{ "runner": "node:test", "include": [ }\n'; break;
- case 'r10-test-missing-file':
-   testConfig = JSON.stringify({runner:'node:test',include:['tests/MissingCard.test.js']},null,2)+'\n'; break;
- case 'r11-npm-missing-artifact':
-   pkg.dependencies['react-missing-local-archive'] = 'file:vendor/react-missing-archive.tgz';
-   lock.packages[''].dependencies = { ...pkg.dependencies };
-   lock.packages['node_modules/react-missing-local-archive'] = {
-      version:'1.0.0',resolved:'file:vendor/react-missing-archive.tgz'
-   }; break;
- case 'r12-npm-integrity':
-   lock.packages['node_modules/react'].integrity = 'sha512-'+ 'A'.repeat(86) +'=='; break;
- case 'r13-registry-refused':
-   pkg.dependencies['react-registry-failure-lab'] = '1.0.0';
-   lock.packages[''].dependencies = { ...pkg.dependencies };
-   lock.packages['node_modules/react-registry-failure-lab'] = {
-      version:'1.0.0',resolved:'http://127.0.0.1:9/react-registry-failure-lab-1.0.0.tgz'
-   }; npmrc+='fetch-retries=0\nfetch-timeout=10000\n'; break;
- case 'r14-docker-missing-copy':
-   dockerfile = 'FROM scratch\nCOPY react-dist-does-not-exist/ /usr/share/nginx/html/\n'; break;
- case 'r15-docker-invalid-command':
-   dockerfile = 'FROM scratch\nTHIS_IS_NOT_VALID_DOCKER_INSTRUCTION broken\n'; break;
- case 'r16-build-tool-node22':
-   pkg.scripts.build = 'node tools/check-node-runtime.cjs && node tools/build.cjs'; break;
- case 'r17-test-unsupported-runner':
-   testConfig = JSON.stringify({runner:'jest',include:['tests/GreetingCard.test.js']},null,2)+'\n'; break;
- case 'r18-vite-broken-config-import':
-   viteConfig = "import { defineConfig } from 'vite';\nimport missingPlugin from './missing-vite-plugin.mjs';\nexport default defineConfig({plugins:[missingPlugin()]});\n"; break;
- default: console.error('Unimplemented scenario '+id); process.exit(2);
-}
-write('package.json',JSON.stringify(pkg,null,2)+'\n');
-write('package-lock.json',JSON.stringify(lock,null,2)+'\n');
-write('src/App.tsx',app);
-write('index.html',index);
-write('tests/test-settings.json',testConfig);
-write('.npmrc',npmrc);
-write('vite.config.mjs',viteConfig);
-if (dockerfile !== null) write('Dockerfile',dockerfile);
-write('experiment.json',JSON.stringify({scenario_id:id,expected_category:id==='baseline'?null:scenario.expected_category,
- expected_stage:scenario.expected_stage,provenance:'CONTROLLED_INDUCED',expected_category_is_verified:false,
- note:'This metadata is not automatically persisted in the platform dataset; review actual Runner evidence.'},null,2)+'\n');
-console.log(`Activated ${id}`);
-console.log(`Expected (not verified): ${scenario.expected_category}`);
-console.log(`Required stage: ${scenario.expected_stage}`);
-console.log('Next: git add -A && git commit -m "test: '+id+'" && git push');
-console.log('Then re-analyze/re-compose a new plan if needed and execute a NEW pipeline.');
-if (id.startsWith('r14-') || id.startsWith('r15-')) console.log('Docker Build stage and builder are REQUIRED for this scenario.');
-if (id==='r16-build-tool-node22') console.log('Select Node 20; package engines stays compatible, build-tool check fails inside Runner.');
+write('pom.xml',pom);
+write('src/main/java/dev/cicd/lab/FailureProbe.java',probe);
+write('experiment.json',JSON.stringify({active_scenario:id,expected_category:scenario.expected_category,expected_stage:scenario.expected_stage,expected_error:scenario.expected_error,is_ground_truth_verified:false},null,2)+'\n');
+console.log('Activated '+id+'\nExpected Category: '+scenario.expected_category+'\nExpected Error: '+scenario.expected_error);

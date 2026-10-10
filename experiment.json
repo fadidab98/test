@@ -1,8 +1,7 @@
 {
-  "scenario_id": "r18-vite-broken-config-import",
-  "expected_category": "BUILD_CONFIGURATION_FAILURE",
-  "expected_stage": "node-build",
-  "provenance": "CONTROLLED_INDUCED",
-  "expected_category_is_verified": false,
-  "note": "This metadata is not automatically persisted in the platform dataset; review actual Runner evidence."
+  "active_scenario": "s01-java-cannot-find-symbol",
+  "expected_category": "COMPILATION_FAILURE",
+  "expected_stage": "maven-build",
+  "expected_error": "cannot find symbol: missingVariable",
+  "is_ground_truth_verified": false
 }

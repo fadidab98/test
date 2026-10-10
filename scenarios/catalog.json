@@ -2,134 +2,134 @@
   {
     "id": "baseline",
     "expected_category": "BASELINE",
-    "expected_stage": "all",
-    "description": "Passing React/Vite control. Not a failure sample.",
+    "expected_stage": "maven-build",
+    "expected_error": "Passing Spring Boot baseline",
     "expected_category_is_verified": false
   },
   {
-    "id": "r01-ts2322-react-props",
+    "id": "s01-java-cannot-find-symbol",
     "expected_category": "COMPILATION_FAILURE",
-    "expected_stage": "node-build",
-    "description": "TS2322: number assigned a string in React TSX",
+    "expected_stage": "maven-build",
+    "expected_error": "cannot find symbol: missingVariable",
     "expected_category_is_verified": false
   },
   {
-    "id": "r02-ts2307-missing-component",
+    "id": "s02-java-incompatible-types",
     "expected_category": "COMPILATION_FAILURE",
-    "expected_stage": "node-build",
-    "description": "TS2307: missing imported React component",
+    "expected_stage": "maven-build",
+    "expected_error": "incompatible types: int cannot be converted to String",
     "expected_category_is_verified": false
   },
   {
-    "id": "r03-ts2345-invalid-argument",
+    "id": "s03-java-missing-package",
     "expected_category": "COMPILATION_FAILURE",
-    "expected_stage": "node-build",
-    "description": "TS2345: invalid function argument",
+    "expected_stage": "maven-build",
+    "expected_error": "package dev.cicd.missing does not exist",
     "expected_category_is_verified": false
   },
   {
-    "id": "r04-ts7006-implicit-any",
+    "id": "s04-java-unreported-exception",
     "expected_category": "COMPILATION_FAILURE",
-    "expected_stage": "node-build",
-    "description": "TS7006: implicit any in component helper",
+    "expected_stage": "maven-build",
+    "expected_error": "unreported IOException; must be caught or declared to be thrown",
     "expected_category_is_verified": false
   },
   {
-    "id": "r05-ts2588-const-assignment",
+    "id": "s05-java-variable-uninitialized",
     "expected_category": "COMPILATION_FAILURE",
-    "expected_stage": "node-build",
-    "description": "TS2588: reassignment to const",
+    "expected_stage": "maven-build",
+    "expected_error": "variable value might not have been initialized",
     "expected_category_is_verified": false
   },
   {
-    "id": "r06-vite-missing-entry",
+    "id": "s06-maven-invalid-plugin-goal",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
-    "expected_stage": "node-build",
-    "description": "Vite cannot resolve missing entry module",
+    "expected_stage": "maven-build",
+    "expected_error": "Could not find goal generate-assets in plugin maven-resources-plugin",
     "expected_category_is_verified": false
   },
   {
-    "id": "r07-build-missing-tsconfig",
+    "id": "s07-maven-invalid-javac-flag",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
-    "expected_stage": "node-build",
-    "description": "TS5058: referenced tsconfig does not exist",
+    "expected_stage": "maven-build",
+    "expected_error": "invalid flag: --not-a-real-javac-option",
     "expected_category_is_verified": false
   },
   {
-    "id": "r08-build-missing-script",
+    "id": "s08-maven-invalid-release",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
-    "expected_stage": "node-build",
-    "description": "npm cannot find build:release script",
+    "expected_stage": "maven-build",
+    "expected_error": "invalid target release: bogus",
     "expected_category_is_verified": false
   },
   {
-    "id": "r09-test-invalid-json",
+    "id": "s09-surefire-invalid-jvm-option",
     "expected_category": "TEST_CONFIGURATION_FAILURE",
-    "expected_stage": "node-test",
-    "description": "Invalid JSON in tests/test-settings.json",
+    "expected_stage": "maven-test",
+    "expected_error": "Unrecognized VM option: ThisIsNotARealJVMOption",
     "expected_category_is_verified": false
   },
   {
-    "id": "r10-test-missing-file",
+    "id": "s10-surefire-no-matching-tests",
     "expected_category": "TEST_CONFIGURATION_FAILURE",
-    "expected_stage": "node-test",
-    "description": "Configured test file does not exist",
+    "expected_stage": "maven-test",
+    "expected_error": "No tests were executed!",
     "expected_category_is_verified": false
   },
   {
-    "id": "r11-npm-missing-artifact",
+    "id": "s11-surefire-missing-javaagent",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "expected_stage": "maven-test",
+    "expected_error": "Error opening zip file or JAR manifest missing: missing-test-agent.jar",
+    "expected_category_is_verified": false
+  },
+  {
+    "id": "s12-maven-missing-dependency",
     "expected_category": "DEPENDENCY_FAILURE",
-    "expected_stage": "node-install",
-    "description": "npm ENOENT local tarball missing",
+    "expected_stage": "maven-build",
+    "expected_error": "Could not find artifact spring-boot-starter-web:jar:99.99.99",
     "expected_category_is_verified": false
   },
   {
-    "id": "r12-npm-integrity",
+    "id": "s13-maven-missing-local-jar",
     "expected_category": "DEPENDENCY_FAILURE",
-    "expected_stage": "node-install",
-    "description": "npm EINTEGRITY react archive checksum mismatch",
+    "expected_stage": "maven-build",
+    "expected_error": "Could not find artifact local-missing-jar from systemPath",
     "expected_category_is_verified": false
   },
   {
-    "id": "r13-registry-refused",
+    "id": "s14-maven-registry-refused",
     "expected_category": "NETWORK_OR_REGISTRY_FAILURE",
-    "expected_stage": "node-install",
-    "description": "npm ECONNREFUSED runner-local artifact endpoint",
+    "expected_stage": "maven-build",
+    "expected_error": "Connection refused to Maven mirror 127.0.0.1:65534",
     "expected_category_is_verified": false
   },
   {
-    "id": "r14-docker-missing-copy",
+    "id": "s15-docker-missing-copy",
     "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
     "expected_stage": "docker-build",
-    "description": "Docker COPY path absent",
+    "expected_error": "COPY missing-spring-app.jar: not found",
     "expected_category_is_verified": false
   },
   {
-    "id": "r15-docker-invalid-command",
+    "id": "s16-docker-invalid-instruction",
     "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
     "expected_stage": "docker-build",
-    "description": "Invalid Dockerfile directive",
+    "expected_error": "unknown instruction: INVALID_SPRING_DOCKER_COMMAND",
     "expected_category_is_verified": false
   },
   {
-    "id": "r16-build-tool-node22",
+    "id": "s17-build-requires-java21",
     "expected_category": "RUNTIME_MISMATCH",
-    "expected_stage": "node-build",
-    "description": "React build tool requires Node 22; Runner uses Node 20",
+    "expected_stage": "maven-build",
+    "expected_error": "Maven Enforcer requires Java >=21; Runner Java 17",
     "expected_category_is_verified": false
   },
   {
-    "id": "r17-test-unsupported-runner",
-    "expected_category": "TEST_CONFIGURATION_FAILURE",
-    "expected_stage": "node-test",
-    "description": "Unsupported runner configured: jest instead of node:test",
-    "expected_category_is_verified": false
-  },
-  {
-    "id": "r18-vite-broken-config-import",
-    "expected_category": "BUILD_CONFIGURATION_FAILURE",
-    "expected_stage": "node-build",
-    "description": "Vite config import refers to nonexistent local module",
+    "id": "s18-java-syntax-error",
+    "expected_category": "COMPILATION_FAILURE",
+    "expected_stage": "maven-build",
+    "expected_error": "javac: ; expected",
     "expected_category_is_verified": false
   }
 ]
