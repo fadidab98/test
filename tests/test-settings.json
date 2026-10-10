@@ -1,1 +1,6 @@
-{ "runner": "node:test", "include": [ }
+{
+  "runner": "node:test",
+  "include": [
+    "tests/MissingCard.test.js"
+  ]
+}
