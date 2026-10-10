@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s08-maven-invalid-release",
-  "expected_category": "BUILD_CONFIGURATION_FAILURE",
-  "expected_stage": "maven-build",
-  "expected_error": "invalid target release: bogus",
+  "active_scenario": "s09-surefire-invalid-jvm-option",
+  "expected_category": "TEST_CONFIGURATION_FAILURE",
+  "expected_stage": "maven-test",
+  "expected_error": "Unrecognized VM option: ThisIsNotARealJVMOption",
   "is_ground_truth_verified": false
 }
