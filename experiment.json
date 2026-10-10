@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s03-java-missing-package",
+  "active_scenario": "s04-java-unreported-exception",
   "expected_category": "COMPILATION_FAILURE",
   "expected_stage": "maven-build",
-  "expected_error": "package dev.cicd.missing does not exist",
+  "expected_error": "unreported IOException; must be caught or declared to be thrown",
   "is_ground_truth_verified": false
 }
