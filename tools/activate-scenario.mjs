@@ -1,33 +1,51 @@
 #!/usr/bin/env node
-'use strict';
-// Switch between the passing baseline and a controlled Maven Surefire launch failure.
-import fs from 'node:fs';
-import path from 'node:path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const source = path.join(root, 'scenarios', 'base', 'pom.xml');
-const dest = path.join(root, 'pom.xml');
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const choices = new Map([
+  ['tc02-maven-unresolved-dependency', {
+    category: 'DEPENDENCY_FAILURE',
+    error: 'Could not resolve dependencies / Could not find artifact',
+  }],
+  ['tc03-java-syntax-error', {
+    category: 'COMPILATION_FAILURE',
+    error: "COMPILATION ERROR / ';' expected",
+  }],
+  ['tc04-java-version-mismatch', {
+    category: 'RUNTIME_MISMATCH',
+    error: 'This project requires Java 21 or later (Java 17 runner)',
+  }],
+  ['tc05-invalid-pom-xml', {
+    category: 'BUILD_CONFIGURATION_FAILURE',
+    error: 'Non-parseable POM / mismatched XML tag',
+  }],
+]);
 const scenario = process.argv[2];
-if (!scenario || !['--reset','tc01-surefire-invalid-java-path'].includes(scenario)) {
-  console.error('Usage: node tools/activate-scenario.mjs --reset | tc01-surefire-invalid-java-path');
+if (process.argv.length !== 3 || (scenario !== 'reset' && !choices.has(scenario))) {
+  console.error('Usage: node tools/activate-scenario.mjs <scenario-id|reset>');
+  console.error('Available scenarios:');
+  for (const [id, info] of choices) console.error(`  ${id} -> ${info.category}`);
   process.exit(2);
 }
-const baseline = fs.readFileSync(source, 'utf8');
-if (scenario === '--reset') {
-  fs.writeFileSync(dest, baseline);
-  console.log('Activated passing Spring Boot baseline');
-  process.exit(0);
+const selected = scenario === 'reset' ? 'baseline' : scenario;
+const src = join(root, 'tools', 'scenarios', selected);
+const targets = [
+  ['pom.xml', 'pom.xml'],
+  ['Calculator.java', 'src/main/java/dev/cicd/lab/Calculator.java'],
+];
+for (const [filename, relativeDestination] of targets) {
+  const content = readFileSync(join(src, filename), 'utf8');
+  writeFileSync(join(root, relativeDestination), content, 'utf8');
 }
-const needle = '<artifactId>maven-surefire-plugin</artifactId><version>3.2.5</version>';
-if (!baseline.includes(needle)) {
-  console.error('Cannot find expected Surefire plugin; no files changed.');
-  process.exit(1);
+if (scenario === 'reset') {
+  console.log('Baseline restored. Expected: mvn -B test -> BUILD SUCCESS.');
+} else {
+  const info = choices.get(scenario);
+  console.log(`Activated: ${scenario}`);
+  console.log(`Expected Category: ${info.category}`);
+  console.log(`Expected Error Pattern: ${info.error}`);
 }
-const replacement = needle + `<configuration>
-      <forkCount>1</forkCount>
-      <reuseForks>false</reuseForks>
-      <jvm>\${project.basedir}/tools/missing-test-jdk/bin/java</jvm>
-    </configuration>`;
-fs.writeFileSync(dest, baseline.replace(needle, replacement));
-console.log('Activated tc01-surefire-invalid-java-path');
-console.log('Maven compilation should succeed, then Surefire should fail launching its test JVM.');
+console.log('Next: git add pom.xml src/main/java/dev/cicd/lab/Calculator.java');
+console.log('Then commit and push to GitHub BEFORE starting a new platform pipeline run.');
