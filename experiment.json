@@ -1,5 +1,5 @@
 {
-  "scenario_id": "r07-build-missing-tsconfig",
+  "scenario_id": "r08-build-missing-script",
   "expected_category": "BUILD_CONFIGURATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
