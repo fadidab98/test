@@ -1,10 +1,10 @@
 package dev.cicd.lab;
 
-/** Healthy source used in all scenarios except the deliberate syntax failure. */
+/** Deliberate Java syntax error: a missing semicolon in the return statement. */
 public final class Calculator {
     private Calculator() {}
 
     public static int add(int a, int b) {
-        return a + b;
+        return a + b
     }
 }

@@ -21,12 +21,7 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-    <!-- Intentionally missing Maven Central artifact for CI failure-classification test. -->
-    <dependency>
-      <groupId>dev.cicd.lab.nonexistent</groupId>
-      <artifactId>missing-dependency-for-rag-test</artifactId>
-      <version>99.99.99</version>
-    </dependency>
+
   </dependencies>
 
   <build>
