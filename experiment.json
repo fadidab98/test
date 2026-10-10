@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s10-surefire-no-matching-tests",
+  "active_scenario": "s11-surefire-missing-javaagent",
   "expected_category": "TEST_CONFIGURATION_FAILURE",
   "expected_stage": "maven-test",
-  "expected_error": "No tests were executed!",
+  "expected_error": "Error opening zip file or JAR manifest missing: missing-test-agent.jar",
   "is_ground_truth_verified": false
 }
