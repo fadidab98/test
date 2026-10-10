@@ -1,3 +1,3 @@
 import React from "react";
-function formatCount(value: number) { return value.toFixed(0); }
-export function App() { return <main>{formatCount("five")}</main>; }
+function describeFailure(value) { return String(value); }
+export function App() { return <main>{describeFailure(1)}</main>; }
