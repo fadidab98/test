@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s13-maven-missing-local-jar",
-  "expected_category": "DEPENDENCY_FAILURE",
+  "active_scenario": "s14-maven-registry-refused",
+  "expected_category": "NETWORK_OR_REGISTRY_FAILURE",
   "expected_stage": "maven-build",
-  "expected_error": "Could not find artifact local-missing-jar from systemPath",
+  "expected_error": "Connection refused to Maven mirror 127.0.0.1:65534",
   "is_ground_truth_verified": false
 }

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"><mirrors><mirror><id>lab-unreachable</id><url>http://127.0.0.1:65534/maven2/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>
