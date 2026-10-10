@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s02-java-incompatible-types",
+  "active_scenario": "s03-java-missing-package",
   "expected_category": "COMPILATION_FAILURE",
   "expected_stage": "maven-build",
-  "expected_error": "incompatible types: int cannot be converted to String",
+  "expected_error": "package dev.cicd.missing does not exist",
   "is_ground_truth_verified": false
 }
