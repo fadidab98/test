@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "typescript": "file:vendor/typescript-5.8.3.tgz"
+  },
+  "dependencies": {
+    "scenario-missing-artifact": "file:vendor/not-here-1.0.0.tgz"
   }
 }
