@@ -86,9 +86,9 @@ switch (id) {
     };
     break;
   case 'n07-runtime-engine':
-    pkg.engines.node = '>=24';
-    lock.packages[''].engines.node = '>=24';
-    npmrc += 'engine-strict=true\n';
+    // Keep root engines compatible with Node 20 so repository/runtime preflight passes.
+    // A specific build tool intentionally requires Node 22+, causing a REAL runner build failure.
+    pkg.scripts.build = 'node tools/check-node-runtime.cjs && node tools/build.cjs';
     break;
   case 'n08-build-missing-tsconfig':
     pkg.scripts.build = 'node tools/build.cjs --tsconfig tsconfig.missing.json';
@@ -151,4 +151,4 @@ console.log('Then re-analyze/compose if required and launch a NEW pipeline run.'
 if (id.startsWith('n13-') || id.startsWith('n14-')) {
   console.log('IMPORTANT: Docker Build must be explicitly selected and a Docker builder must be available.');
 }
-if (id === 'n07-runtime-engine') console.log('IMPORTANT: Select Node 20; a runtime preflight may block execution before Runner.');
+if (id === 'n07-runtime-engine') console.log('IMPORTANT: Select node-20 and include node-build; npm ci succeeds, build requires Node >=22.');

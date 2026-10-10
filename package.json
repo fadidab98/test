@@ -4,7 +4,7 @@
   "private": true,
   "description": "Controlled Node.js and TypeScript CI failure scenarios for ML training evidence",
   "scripts": {
-    "build": "node node_modules/typescript/bin/tsc --unknownOption",
+    "build": "node tools/check-node-runtime.cjs && node tools/build.cjs",
     "test": "node tools/test-runner.cjs"
   },
   "engines": {

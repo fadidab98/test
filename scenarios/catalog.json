@@ -58,10 +58,10 @@
   {
     "id": "n07-runtime-engine",
     "expected_category": "RUNTIME_MISMATCH",
-    "expected_stage": "node-install",
-    "description": "npm EBADENGINE: Node >=24 enforced on Node 20",
-    "kind": "npm",
-    "notes": "May be rejected by runtime preflight before reaching Runner."
+    "expected_stage": "node-build",
+    "description": "Build-time runtime mismatch: build tool requires Node >=22, while Node 20 is selected",
+    "kind": "runtime",
+    "notes": "Root package engines remains Node20-compatible so platform preflight passes; node-build fails with ERR_UNSUPPORTED_NODE_VERSION."
   },
   {
     "id": "n08-build-missing-tsconfig",
