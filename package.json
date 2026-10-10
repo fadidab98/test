@@ -1,13 +1,13 @@
 {
-  "name": "node-docker-invalid-instruction-failure",
+  "name": "devops-ml-failure-lab",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
-  "engines": {
-    "node": "20.x"
-  },
+  "description": "Controlled real CI failure scenarios for moderator-reviewed ML labels",
   "scripts": {
-    "build": "node scripts/build.mjs"
+    "build": "node tools/legacy-openssl.cjs",
+    "test": "node --test tests/app.test.js"
   },
-  "dependencies": {}
+  "engines": {
+    "node": ">=18"
+  }
 }

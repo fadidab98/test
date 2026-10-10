@@ -1,0 +1,7 @@
+{
+  "scenario_id": "runtime-openssl-md4",
+  "expected_category": "RUNTIME_MISMATCH",
+  "expected_stage": "node-build",
+  "provenance": "CONTROLLED_INDUCED",
+  "note": "Expected category is a hypothesis, NOT an independently verified label; review the actual runner evidence."
+}

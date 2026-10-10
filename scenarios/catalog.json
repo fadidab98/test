@@ -1,0 +1,100 @@
+[
+  {
+    "id": "baseline",
+    "expected_category": "BASELINE",
+    "description": "Successful npm ci, npm test, npm run build",
+    "expected_stage": "all",
+    "notes": "Control run, not a failure sample"
+  },
+  {
+    "id": "runtime-node24-engine",
+    "expected_category": "RUNTIME_MISMATCH",
+    "description": "Node engine >=24 with engine-strict, triggers npm EBADENGINE under older Node",
+    "expected_stage": "node-install",
+    "notes": "May be stopped by platform runtime preflight if no compatible runner"
+  },
+  {
+    "id": "runtime-openssl-md4",
+    "expected_category": "RUNTIME_MISMATCH",
+    "description": "Legacy MD4 OpenSSL API fails on modern Node/OpenSSL",
+    "expected_stage": "node-build",
+    "notes": "Actual OpenSSL runtime compatibility failure"
+  },
+  {
+    "id": "dependency-no-lockfile",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "description": "Missing package-lock.json blocks npm ci",
+    "expected_stage": "node-install",
+    "notes": "Real npm ci EUSAGE missing lockfile"
+  },
+  {
+    "id": "dependency-stale-lockfile",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "description": "package.json depends on is-number but lockfile has not been updated",
+    "expected_stage": "node-install",
+    "notes": "Real npm ci out-of-sync lockfile error"
+  },
+  {
+    "id": "dependency-missing-module",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "description": "Source requires a package not installed in the dependency graph",
+    "expected_stage": "node-build",
+    "notes": "Real MODULE_NOT_FOUND after npm ci; verify reviewer taxonomy"
+  },
+  {
+    "id": "build-missing-nested-script",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "description": "Build script calls nonexistent build:release npm script",
+    "expected_stage": "node-build",
+    "notes": "Real npm missing build script"
+  },
+  {
+    "id": "build-wrong-entrypoint",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "description": "Build script refers to nonexistent local entrypoint",
+    "expected_stage": "node-build",
+    "notes": "Real missing source entrypoint; reviewers must distinguish missing dependency"
+  },
+  {
+    "id": "test-missing-suite",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "description": "Test configuration points to a nonexistent test file",
+    "expected_stage": "node-test",
+    "notes": "Real Node test runner cannot locate configured suite"
+  },
+  {
+    "id": "test-invalid-runner-flag",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "description": "Test command contains invalid Node runner flag",
+    "expected_stage": "node-test",
+    "notes": "Real Node command-line test setup failure"
+  },
+  {
+    "id": "compilation-syntax-token",
+    "expected_category": "COMPILATION_FAILURE",
+    "description": "Syntax error in application source caught by node --check",
+    "expected_stage": "node-build",
+    "notes": "Real JavaScript parser failure; confirm classification on review"
+  },
+  {
+    "id": "compilation-unclosed-source",
+    "expected_category": "COMPILATION_FAILURE",
+    "description": "Unclosed JavaScript source block caught by node --check",
+    "expected_stage": "node-build",
+    "notes": "Real JavaScript parser failure with a distinct source defect"
+  },
+  {
+    "id": "network-unreachable-package",
+    "expected_category": "NETWORK_OR_REGISTRY_FAILURE",
+    "description": "Lockfile package artifact URL points to unreachable runner-local TCP endpoint",
+    "expected_stage": "node-install",
+    "notes": "Real ECONNREFUSED when npm fetches artifact; no public registry outage is simulated"
+  },
+  {
+    "id": "container-missing-copy",
+    "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+    "description": "Dockerfile COPY points to missing build-context file",
+    "expected_stage": "docker-build",
+    "notes": "Requires selecting Docker Build in pipeline and a functioning Docker builder"
+  }
+]
