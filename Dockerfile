@@ -1,2 +1,2 @@
 FROM scratch
-COPY react-dist-does-not-exist/ /usr/share/nginx/html/
+THIS_IS_NOT_VALID_DOCKER_INSTRUCTION broken

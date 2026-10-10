@@ -1,5 +1,5 @@
 {
-  "scenario_id": "r14-docker-missing-copy",
+  "scenario_id": "r15-docker-invalid-command",
   "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
   "expected_stage": "docker-build",
   "provenance": "CONTROLLED_INDUCED",
