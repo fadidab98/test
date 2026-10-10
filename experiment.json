@@ -1,5 +1,5 @@
 {
-  "scenario_id": "r06-vite-missing-entry",
+  "scenario_id": "r07-build-missing-tsconfig",
   "expected_category": "BUILD_CONFIGURATION_FAILURE",
   "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
