@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s05-java-variable-uninitialized",
-  "expected_category": "COMPILATION_FAILURE",
+  "active_scenario": "s06-maven-invalid-plugin-goal",
+  "expected_category": "BUILD_CONFIGURATION_FAILURE",
   "expected_stage": "maven-build",
-  "expected_error": "variable value might not have been initialized",
+  "expected_error": "Could not find goal generate-assets in plugin maven-resources-plugin",
   "is_ground_truth_verified": false
 }
