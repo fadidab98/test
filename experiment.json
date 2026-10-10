@@ -1,7 +1,7 @@
 {
-  "active_scenario": "s07-maven-invalid-javac-flag",
+  "active_scenario": "s08-maven-invalid-release",
   "expected_category": "BUILD_CONFIGURATION_FAILURE",
   "expected_stage": "maven-build",
-  "expected_error": "invalid flag: --not-a-real-javac-option",
+  "expected_error": "invalid target release: bogus",
   "is_ground_truth_verified": false
 }
