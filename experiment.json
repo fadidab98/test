@@ -1,7 +1,7 @@
 {
-  "scenario_id": "r17-test-unsupported-runner",
-  "expected_category": "TEST_CONFIGURATION_FAILURE",
-  "expected_stage": "node-test",
+  "scenario_id": "r18-vite-broken-config-import",
+  "expected_category": "BUILD_CONFIGURATION_FAILURE",
+  "expected_stage": "node-build",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
   "note": "This metadata is not automatically persisted in the platform dataset; review actual Runner evidence."

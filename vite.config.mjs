@@ -1,2 +1,3 @@
 import { defineConfig } from 'vite';
-export default defineConfig({ build: { outDir: 'dist', emptyOutDir: true } });
+import missingPlugin from './missing-vite-plugin.mjs';
+export default defineConfig({plugins:[missingPlugin()]});
