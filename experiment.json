@@ -1,6 +1,6 @@
 {
-  "scenario_id": "n06-npm-missing-tarball",
-  "expected_category": "DEPENDENCY_FAILURE",
+  "scenario_id": "n07-runtime-engine",
+  "expected_category": "RUNTIME_MISMATCH",
   "expected_stage": "node-install",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,

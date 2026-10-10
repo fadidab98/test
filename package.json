@@ -8,12 +8,9 @@
     "test": "node tools/test-runner.cjs"
   },
   "engines": {
-    "node": ">=18 <24"
+    "node": ">=24"
   },
   "devDependencies": {
     "typescript": "file:vendor/typescript-5.8.3.tgz"
-  },
-  "dependencies": {
-    "scenario-missing-artifact": "file:vendor/not-here-1.0.0.tgz"
   }
 }
