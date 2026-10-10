@@ -6,7 +6,7 @@
   "description": "Controlled real React + Vite CI failures for reviewed ML training data",
   "scripts": {
     "test": "node tools/test-runner.cjs",
-    "build": "npm run build:release"
+    "build": "node tools/build.cjs"
   },
   "engines": {
     "node": ">=18 <24"

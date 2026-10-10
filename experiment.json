@@ -1,7 +1,7 @@
 {
-  "scenario_id": "r08-build-missing-script",
-  "expected_category": "BUILD_CONFIGURATION_FAILURE",
-  "expected_stage": "node-build",
+  "scenario_id": "r09-test-invalid-json",
+  "expected_category": "TEST_CONFIGURATION_FAILURE",
+  "expected_stage": "node-test",
   "provenance": "CONTROLLED_INDUCED",
   "expected_category_is_verified": false,
   "note": "This metadata is not automatically persisted in the platform dataset; review actual Runner evidence."
