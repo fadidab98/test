@@ -1,6 +1,4 @@
-target/
-.idea/
-.vscode/
-*.class
+node_modules/
+dist/
 *.log
 .DS_Store
