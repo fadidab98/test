@@ -1,5 +1,7 @@
 # Manual Fix + Full Pipeline Validation Lab (Node.js)
 
+**Compatibility:** Source and test files use `.js` (not `.cjs`) so the platform can discover `test/total.test.js`. The project uses Node.js CommonJS (`require`) with no `"type": "module"`.
+
 **Purpose:** Test your platform's existing **Moderator → Fix Candidate → Template Fix Layer → Full Validation → Mark as Solved → Knowledge Base** workflow. The repository intentionally contains ONE missing test-time npm dependency. No source-code fix is needed during platform validation.
 
 ## Scenario (already active in this ZIP)
@@ -16,7 +18,7 @@ node tools/activate-scenario.mjs tc06-node-missing-test-dependency
 Error: Cannot find module 'is-number'
 code: 'MODULE_NOT_FOUND'
 Require stack:
-.../test/total.test.cjs
+.../test/total.test.js
 ```
 
 `is-number` is imported in the test but intentionally NOT listed in `package.json` or `package-lock.json`. `npm ci` must succeed; `npm test` must fail. A successful `npm run build` checks actual application logic and creates `dist/build-manifest.json`.
