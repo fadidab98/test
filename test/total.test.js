@@ -1,4 +1,5 @@
 "use strict";
+require('./test-utils');
 const test = require("node:test");
 const assert = require("node:assert/strict");
 // INTENTIONAL CI FAILURE: package.json has no `is-number` dependency.
