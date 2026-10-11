@@ -1,0 +1,9 @@
+{
+  "name": "rag-live-npm-missing-script-test",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CI/CD live external knowledge fallback test for npm Missing script",
+  "scripts": {
+    "build": "node -e \"console.log('Build successful')\""
+  }
+}
