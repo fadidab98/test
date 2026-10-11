@@ -1,104 +1,79 @@
-# Manual Fix + Full Pipeline Validation Lab (Node.js)
+# Maven Missing Artifact — RAG Classification Test
 
-**Compatibility:** Source and test files use `.js` (not `.cjs`) so the platform can discover `test/total.test.js`. The project uses Node.js CommonJS (`require`) with no `"type": "module"`.
+A deliberately broken **standalone Maven / Java 17** repository used to evaluate the
+**AI-Driven DevOps Platform** (repository analysis, pipeline execution, RAG classification,
+RAG recommendation, and the safe Moderator fallback).
 
-**Purpose:** Test your platform's existing **Moderator → Fix Candidate → Template Fix Layer → Full Validation → Mark as Solved → Knowledge Base** workflow. The repository intentionally contains ONE missing test-time npm dependency. No source-code fix is needed during platform validation.
+## What is intentionally broken?
 
-## Scenario (already active in this ZIP)
+The `pom.xml` declares a dependency that is **not published**:
 
-```bash
-node tools/activate-scenario.mjs tc06-node-missing-test-dependency
+```xml
+<dependency>
+    <groupId>example.invalid</groupId>
+    <artifactId>missing-library-demo</artifactId>
+    <version>99.99.99</version>
+</dependency>
 ```
 
-**Expected category:** `DEPENDENCY_FAILURE`  
-**Expected failed step:** `node-test` (Test)  
-**Expected error:**
+The Java class and JUnit tests are valid. On a Maven runner with access to Maven Central,
+a build should fail during dependency resolution. The exact error text varies with
+Maven and repository settings, but typically contains:
 
 ```text
-Error: Cannot find module 'is-number'
-code: 'MODULE_NOT_FOUND'
-Require stack:
-.../test/total.test.js
+Could not find artifact example.invalid:missing-library-demo:jar:99.99.99 in central
 ```
 
-`is-number` is imported in the test but intentionally NOT listed in `package.json` or `package-lock.json`. `npm ci` must succeed; `npm test` must fail. A successful `npm run build` checks actual application logic and creates `dist/build-manifest.json`.
+Do not interpret a network, proxy, or authentication failure as an absent artifact.
 
-## 1 — Upload to GitHub and run original pipeline
+## Upload to a new GitHub repository
 
-Unzip and upload the **contents of `manual-fix-node-dependency-lab/`** as the root of a new GitHub repository. In your DevOps platform create a project with this repo, analyze it, and compose/lock a plan including these templates:
-
-1. `node-install-template` → `node-install`: `npm ci`
-2. `node-test-template` → `node-test`: `npm test`
-3. `node-build-template` → `node-build`: `npm run build`
-
-Do not select Docker, push or deployment steps for this lab. (The platform orders Node testing before Node building.) Run the plan. Expected: **node-install SUCCESS, node-test FAILED, node-build NOT RUN**.
-
-## 2 — Manually create the correct fix in Moderator
-
-Open the newly created Incident. Under **Patch Catalog**, select:
-
-```text
-Patch:                    Install Node Transient Package
-Patch catalog ID:         install-node-transient-package
-Failure class:            DEPENDENCY_FAILURE
-Repair strategy:          Add Missing Dependency
-Package Name:             is-number
-Package Version:          7.0.0
-Runner requirement:       node-20
-Solution explanation:     The test imports is-number, but it is missing from package.json.
-What pipeline should do next time:
-                           Install is-number@7.0.0 before node-test.
-```
-
-Click **Create Template Fix Layer** and select the created Fix Candidate. The platform should insert a step before the original `node-test`:
+Create a new empty GitHub repository, e.g. `maven-missing-artifact-rag-test`.
+Extract the ZIP, then run these commands from **inside the extracted folder**:
 
 ```bash
-npm install --no-save is-number@7.0.0
+git init
+git add .
+git commit -m "Add Maven dependency resolution test project"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/maven-missing-artifact-rag-test.git
+git push -u origin main
 ```
 
-The original test command `npm test` stays unchanged. Do NOT use `Skip Tests` or replace test with a no-op.
+Alternatively, use GitHub's **Add file → Upload files** and upload the extracted
+contents (`pom.xml`, `src/`, `README.md`, `.gitignore`) to the repository root.
 
-## 3 — Full Pipeline Validation
+## Run in the AI-Driven DevOps Platform
 
-Start **Deployment-Free Pipeline Validation** for the Fix Candidate. Expected workflow:
+1. Add the new repository URL as a **new project**.
+2. Analyze it and let the platform detect **Maven / Java**.
+3. Compose a Java/Maven pipeline and execute it.
+4. Inspect the failed step's **actual runner logs** and open the new incident.
+5. Test **RAG Classification** and **Fix Now**.
 
-```text
-node-install                         SUCCESS (npm ci)
-node-test-fix-before-1 (synthetic)   SUCCESS (npm install --no-save is-number@7.0.0)
-node-test                            SUCCESS (npm test; real tests execute)
-node-build                           SUCCESS (npm run build)
-FULL_VALIDATION                     SUCCESS
-```
+Expected RAG behavior:
 
-If the platform has different synthetic step naming, follow the displayed step labels. This is an expected outcome, not independently verified in your deployment.
+| Property | Expected |
+| --- | --- |
+| Failure category | `DEPENDENCY_FAILURE` |
+| Technology | `JAVA` / Maven |
+| Error evidence | Missing `example.invalid:missing-library-demo:99.99.99` artifact |
+| Recommendation | Check coordinates, repository configuration, artifact availability |
+| Automatic npm patch | **Must not** be suggested or executed |
+| Automatic repair without an approved Maven patch | Safe Moderator fallback |
 
-## 4 — Approve and store the solution
+**Important:** A retrieval result or a guessed RAG answer is not proof of actual
+classification. Judge it using the incident's **Suggested Category**, explanation,
+and runner logs.
 
-Only after the FULL_VALIDATION run is SUCCESS: review the fix and use **Mark as Solved**. Then inspect the Knowledge Entry. Enable Auto Apply only if you deliberately want to test preflight reuse.
+## Optional control case: make this project pass
 
-## 5 — Optional local checks
+**After** recording the failed case, remove only the intentionally broken dependency
+block from `pom.xml`; leave the legitimate JUnit dependency in place. Commit the change
+and run the pipeline again. Assuming the environment can reach Maven Central and has a
+compatible Java/Maven setup, `mvn -B -ntp clean verify` should then compile and run two tests.
 
-```bash
-npm ci                    # succeeds (lockfile included)
-npm test                  # expected MODULE_NOT_FOUND
-npm install --no-save is-number@7.0.0
-npm test                  # now passes (requires access to npm registry)
-npm run build             # passes
-```
+## Safety
 
-To reset to a healthy repository **without installing any extra dependency**:
-
-```bash
-node tools/activate-scenario.mjs reset
-npm ci
-npm test
-npm run build
-```
-
-To recreate the original failing scenario:
-
-```bash
-node tools/activate-scenario.mjs tc06-node-missing-test-dependency
-```
-
-**Notes:** Do not commit `node_modules` or `dist`. The patch is deliberately transient and does NOT amend the repository's package manifest. Production dependency repair would normally update `package.json` and `package-lock.json`; this lab tests the available catalog operation and the validation/knowledge flow. Any `npm ci` performed *after* the transient installation removes the extraneous package again.
+This is an educational failure fixture; don't copy the broken dependency into a real service.
+No repository files, credentials, or database data in your platform are modified by this ZIP.
