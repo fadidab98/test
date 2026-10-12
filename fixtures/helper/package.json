@@ -1,0 +1,7 @@
+{
+  "name": "local-helper",
+  "version": "1.0.0",
+  "peerDependencies": {
+    "semver": "^7.0.0"
+  }
+}

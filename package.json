@@ -1,0 +1,13 @@
+{
+  "name": "pipeline-sample",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.cjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "semver": "7.7.2",
+    "local-helper": "file:fixtures/helper"
+  }
+}
