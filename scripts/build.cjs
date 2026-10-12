@@ -1,4 +1,4 @@
-const { add } = require('./unavailable-service.cjs');
+const { add } = require('./math.cjs');
 const fs = require('node:fs');
 require('node:child_process').execFileSync(process.execPath, ['scripts/format.mjs'], {stdio: 'inherit'});
 const config = JSON.parse(fs.readFileSync('build-config.json', 'utf8'));
