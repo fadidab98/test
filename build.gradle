@@ -1,5 +1,5 @@
 plugins { id 'java' }
-repositories { mavenCentral() }
+repositories { unknownRepositoryMethod() }
 java { toolchain { languageVersion = JavaLanguageVersion.of(17) } }
 dependencies { testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3' }
 test { useJUnitPlatform() }
