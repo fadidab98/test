@@ -1,2 +1,2 @@
-const count: number = 2;
+const count: number = "two";
 export const message = String(count);
