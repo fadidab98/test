@@ -1,1 +1,1 @@
-module.exports = {ready: true};
+export const ready = true;
