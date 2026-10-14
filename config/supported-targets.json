@@ -1,0 +1,13 @@
+{
+  "moduleFormats": [
+    "esm"
+  ],
+  "nodeMajors": [
+    20,
+    22,
+    24
+  ],
+  "platforms": [
+    "node"
+  ]
+}

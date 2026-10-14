@@ -1,11 +1,11 @@
 {
-  "name": "failure-lab-50-test-configuration",
+  "name": "failure-lab-80-build-configuration",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Controlled DevOps failure classification integration test",
   "scripts": {
-    "build": "node scripts/build.js",
+    "build": "node scripts/release-build.js",
     "test": "node --test",
     "start": "node src/server.js"
   },

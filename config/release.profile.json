@@ -1,0 +1,16 @@
+{
+  "profile": "ci-release",
+  "entry": "src/server.js",
+  "artifactDirectory": "dist/release",
+  "target": {
+    "platform": "node",
+    "moduleFormat": "esm-v2",
+    "nodeMajor": 20
+  },
+  "checks": [
+    "syntax",
+    "entry",
+    "target",
+    "manifest"
+  ]
+}
