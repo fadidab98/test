@@ -1,6 +1,6 @@
-# Containerized invoice-processing service
+# Release artifact registry integration
 
-Multi-stage Dockerfile, service modules, stage checker and integration tests. The Dockerfile COPY --from stage does not exist. The test checks container configuration without needing Docker daemon or image downloads.
+Multi-layer release approval client that retrieves metadata and signed artifact records from a local simulated registry. The local registry deliberately returns HTTP 503 Service Unavailable for artifact fetching while health and metadata calls remain healthy. No internet required.
 
 ## Platform use
 
