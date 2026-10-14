@@ -1,2 +1,0 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {handleDelivery} from '../src/application/queue-handler.js';import {memoryStore} from '../src/adapters/memory-store.js';
-test('queue stores materialized order',async()=>{const store=memoryStore();await handleDelivery([{id:'a',kind:'paid',orderId:'o',amountCents:23}],store);assert.equal((await store.all())[0].totalCents,23)});

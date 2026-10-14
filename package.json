@@ -1,15 +1,15 @@
 {
-  "name": "failure-lab-100-runtime-mismatch-node20-runner",
+  "name": "lab-100-container-stages",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Node 20 runner compatible integration test with a deliberately incompatible Node 24 worker policy",
-  "scripts": {
-    "build": "node scripts/build.js",
-    "test": "node --test",
-    "start": "node src/entry/server.js"
-  },
   "engines": {
     "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node --test test/*.test.js",
+    "test:unit": "node --test test/unit*.test.js",
+    "test:integration": "node --test test/integration*.test.js"
   }
 }

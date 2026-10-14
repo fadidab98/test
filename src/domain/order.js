@@ -1,1 +1,0 @@
-export function aggregateOrder(events){return events.reduce((state,e)=>({orderId:e.orderId,totalCents:state.totalCents+(e.amountCents||0),eventCount:state.eventCount+1}),{orderId:events[0]?.orderId||null,totalCents:0,eventCount:0});}
