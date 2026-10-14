@@ -1,6 +1,6 @@
-# Order processing and email delivery
+# Multi-format audit export service
 
-A modular order-processing API with pricing rules, persistence and a notification adapter. The notification adapter dynamically loads an undeclared optional renderer when an integration test requests a delivery notice.
+Layered audit export service: core rules, in-memory store, JSON encoder and a lazy-loaded CSV export plugin. The CSV plugin has a parsing defect in the source module and is only loaded by the end-to-end test.
 
 ## Platform use
 

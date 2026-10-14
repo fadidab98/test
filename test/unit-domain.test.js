@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {auditEntry,compareSequence} from '../src/domain/audit-entry.js';
+import {checksum} from '../src/domain/checksum.js';
+import {MemoryStore} from '../src/infra/memory-store.js';
+test('entry validates identifiers',()=>assert.equal(auditEntry({id:' A ',event:'created',sequence:2}).id,'A'));
+test('empty event rejected',()=>assert.throws(()=>auditEntry({id:'a',event:'',sequence:1}),/event/));
+test('sequence positive',()=>assert.throws(()=>auditEntry({id:'a',event:'ok',sequence:-1}),/sequence/));
+test('sorting is ascending',()=>assert.ok(compareSequence({sequence:1},{sequence:2})<0));
+test('checksum deterministic',()=>assert.equal(checksum({id:'x'}),checksum({id:'x'})));
+test('store retrieves saved entries',()=>{const s=new MemoryStore();s.save('e',{id:1});assert.equal(s.get('e').id,1)});
