@@ -1,6 +1,6 @@
-# Failure Lab 100 — Runtime mismatch (JavaScript only)
+# Failure Lab 100 — Runtime mismatch inside runner (Node 20-compatible manifest)
 
-Larger, modular Node.js event processing service with domain models, application services, adapter interfaces, message processing, bootstrapping, monitoring, packaging, and integration tests. No external dependencies.
+This is a deliberate integration failure for the DevOps platform. The repository itself declares Node >=20, so the pipeline planner can select `node-20`. A specific production worker requires Node >=24 according to `config/runtime.policy.json`, and integration tests deliberately catch that mismatch at runtime. No external dependencies. All implementation and test files are JavaScript.
 
 ```sh
 npm ci
@@ -8,8 +8,10 @@ npm run build
 npm test
 ```
 
-**Intended target: a Node 20 CI runner** (`node-20`), which is the runner profile in your DevOps platform. `npm ci` and `npm run build` should succeed (npm may emit an `EBADENGINE` warning); unit tests pass but the runtime integration tests fail with `ERR_UNSUPPORTED_NODE_VERSION` / `Unsupported CI runtime` because `config/runtime.policy.json` and `package.json` require Node >=24. On Node 22 the same failure is observed; on Node >=24 the scenario should pass. The runner is never asked to deploy.
+Expected on Node 20: `npm ci` succeeds; `npm run build` succeeds; most unit tests pass; `npm test` fails the runtime compatibility and worker bootstrap integration tests with `ERR_UNSUPPORTED_NODE_VERSION`, and exit code 1.
 
-**Expected category:** `RUNTIME_MISMATCH` (provisional test oracle). The source code compiles and domain tests work, but the runtime profile is incompatible with the declared production policy. The error is not a dependency or JavaScript syntax failure. For causal confirmation, use a supported Node 24 environment rather than changing model labels.
+**Expected failure classification:** `RUNTIME_MISMATCH` (provisional test oracle). The fault is not a JavaScript syntax, missing dependency, or build target problem. The worker-level runtime requirement is intentionally stricter than the repository-wide minimum to make the incompatibility observable inside a real run.
 
-Please keep the intentional runtime mismatch in your uploaded GitHub repository. Do not configure the pipeline to skip failed tests. This project is a diagnostic test asset, not a production service.
+This version intentionally differs from the earlier ZIP that requested Node >=24 in `package.json` and was rejected by Template Composition before execution. Do not alter the runtime policy or skip tests. Use a fresh repository/run to observe RAG vs CodeBERT v4.
+
+Complexity 100% is a relative scenario label, not a measured difficulty percentage.
