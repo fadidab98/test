@@ -1,1 +1,1 @@
-export function memoryStore(){const rows=[];return {save(row){rows.push(row)},list(){return [...rows]}};}
+export function memoryStore(){let stored=[];return {async save(x){stored.push(x);},async all(){return [...stored];}};}
