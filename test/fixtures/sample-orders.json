@@ -1,0 +1,13 @@
+{
+  "customerId": "customer-021",
+  "lines": [
+    {
+      "unitPriceCents": 1850,
+      "quantity": 2
+    },
+    {
+      "unitPriceCents": 200,
+      "quantity": 1
+    }
+  ]
+}

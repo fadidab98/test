@@ -1,15 +1,15 @@
-# Order Pipeline Demo
+# Failure Lab 50 — Test configuration (JavaScript only)
 
-A small Node.js 20 order-processing repository to test external CI/CD runners.
+Controlled repository for classification evaluation. Node.js >= 20, no dependencies or network access.
 
-## Commands
-
-```bash
+```sh
 npm ci
 npm run build
 npm test
 ```
 
-The project has no third-party dependencies. It contains an **intentional failure** in the test workflow. Do not correct it before analyzing the CI run in your DevOps platform.
+Expected: `npm ci` succeeds, `npm run build` succeeds, `npm test` fails with `ENOENT` in the fixture-backed contract test. Four tests pass and one fails.
 
-The application itself can run with `npm start`. This repository intentionally does not include GitHub Actions because it is designed for an external pipeline runner.
+**Expected category:** `TEST_CONFIGURATION_FAILURE` (provisional test oracle). Root cause: `config/test.profile.json` specifies a fixture directory that does not exist; the actual fixture is under `test/fixtures/`. This is not a missing npm dependency or a source-code syntax issue. For a controlled confirmation, replace the config's `baseDirectory` value with `test/fixtures` in a disposable copy.
+
+Push project files to GitHub (not this ZIP). No fixes should be applied before testing the platform's initial prediction. Compare RAG/CodeBERT v4 classifications with the observed failure log, not the README label alone.

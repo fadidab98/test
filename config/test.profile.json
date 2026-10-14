@@ -1,0 +1,8 @@
+{
+  "suite": "order-contracts",
+  "fixtures": {
+    "baseDirectory": "test/fixtures-release",
+    "orderFile": "sample-orders.json"
+  },
+  "locale": "en-GB"
+}

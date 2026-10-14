@@ -1,6 +1,0 @@
-{
-  "profile": "ci",
-  "fixtureDirectory": "fixtures/scenarios",
-  "fixtureFile": "orders.json",
-  "requiredScenarioCount": 3
-}
