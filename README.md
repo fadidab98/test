@@ -1,6 +1,6 @@
-# Release artifact registry integration
+# Order processing and email delivery
 
-Multi-layer release approval client that retrieves metadata and signed artifact records from a local simulated registry. The local registry deliberately returns HTTP 503 Service Unavailable for artifact fetching while health and metadata calls remain healthy. No internet required.
+A modular order-processing API with pricing rules, persistence and a notification adapter. The notification adapter dynamically loads an undeclared optional renderer when an integration test requests a delivery notice.
 
 ## Platform use
 

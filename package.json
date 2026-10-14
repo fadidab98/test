@@ -1,5 +1,5 @@
 {
-  "name": "lab-100-registry-service",
+  "name": "lab-100-dependency-resolution",
   "version": "1.0.0",
   "private": true,
   "type": "module",

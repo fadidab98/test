@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { orderOf, orderTotal, shippingBand } from '../src/domain/order.js';
+import { checksum } from '../src/domain/checksum.js';
+import { MemoryStore } from '../src/infra/memory-store.js';
+test('order is normalized', () => assert.equal(orderOf({id:' X ',customer:'a',quantity:2,unitPrice:7}).id,'X'));
+test('quantity is validated', () => assert.throws(() => orderOf({id:'X',customer:'a',quantity:0,unitPrice:5}),/positive integer/));
+test('price computation', () => assert.equal(orderTotal({quantity:3,unitPrice:7}),21));
+test('shipping threshold', () => assert.equal(shippingBand(100),'express'));
+test('sha-derived reference stable', () => assert.equal(checksum({a:1}), checksum({a:1})));
+test('store snapshot protects writes', () => {const s=new MemoryStore();const value={a:1};s.save('x',value);value.a=2;assert.equal(s.get('x').a,1)});
