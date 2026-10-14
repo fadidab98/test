@@ -1,25 +1,15 @@
-# DevOps failure-classification test repository
+# Order Pipeline Demo
 
-Small Node.js 20+ project designed to trigger **one intentional compilation/syntax failure** in the existing DevOps runner. No third-party dependencies, Dockerfile, or GitHub Actions are required.
+A small Node.js 20 order-processing repository to test external CI/CD runners.
 
-## Expected pipeline behavior
+## Commands
 
-| Command | Expected outcome |
-|---|---|
-| `npm ci` | PASS (lockfile included) |
-| `npm run build` | FAIL — `SyntaxError: Unexpected token ';'` |
-| `npm test` | FAIL — the test cannot load the module with invalid syntax |
+```bash
+npm ci
+npm run build
+npm test
+```
 
-**Expected root-cause category:** `COMPILATION_FAILURE`.
+The project has no third-party dependencies. It contains an **intentional failure** in the test workflow. Do not correct it before analyzing the CI run in your DevOps platform.
 
-The deliberate fault is in `src/main.mjs`: `export const pipelineMarker = ;`.
-
-A pipeline failure occurring during `npm test` is **still a compilation/syntax problem**, not necessarily `TEST_CONFIGURATION_FAILURE`. Use this example to compare your v2/v4 model predictions and inspect RAG matches. The predicted classification is not guaranteed.
-
-## Upload to GitHub
-
-Extract this ZIP. Create a new, empty GitHub repository and upload the *contents* of this folder, either using **Add file → Upload files** in GitHub or using Git. Do not upload only the ZIP file to the repository: the platform needs to analyze `package.json`, `package-lock.json`, and `src/`.
-
-In your DevOps platform, add the resulting GitHub repository URL, analyze it, compose/execute its Node.js pipeline, and inspect the failure-classification and RAG results.
-
-**Do not fix the syntax error** until you have finished testing the failure path. No CI/CD platform configurations, datasets, or model checkpoints need changing for this standalone demo.
+The application itself can run with `npm start`. This repository intentionally does not include GitHub Actions because it is designed for an external pipeline runner.

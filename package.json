@@ -1,14 +1,13 @@
 {
-  "name": "devops-codebert-v4-failure-demo",
+  "name": "order-pipeline-fixture-demo",
   "version": "1.0.0",
+  "description": "Small Node.js order pipeline for CI integration testing",
   "private": true,
   "type": "module",
-  "description": "Small repository with an intentional JavaScript syntax error for DevOps failure classification tests.",
-  "engines": {
-    "node": ">=20"
-  },
+  "engines": { "node": ">=20" },
   "scripts": {
-    "build": "node --check src/main.mjs",
-    "test": "node --test"
+    "build": "node scripts/build.mjs",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
+    "start": "node src/cli.mjs"
   }
 }
