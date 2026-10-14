@@ -1,27 +1,25 @@
-# RAG Live Search Test: npm Missing Script
+# DevOps failure-classification test repository
 
-This disposable repository **deliberately fails** its existing Node.js build step to test RAG live external knowledge lookup.
+Small Node.js 20+ project designed to trigger **one intentional compilation/syntax failure** in the existing DevOps runner. No third-party dependencies, Dockerfile, or GitHub Actions are required.
 
-## How it works
+## Expected pipeline behavior
 
-- `npm ci` succeeds because `package-lock.json` is present.
-- `npm run build` invokes `npm test`.
-- The project deliberately **does not** define a `test` script.
-- The Node build step therefore fails with `npm error Missing script: "test"` (npm wording varies by version).
-- An Incident should be created, letting the RAG classifier try local reviewed knowledge and (if none matches) live npm documentation.
+| Command | Expected outcome |
+|---|---|
+| `npm ci` | PASS (lockfile included) |
+| `npm run build` | FAIL — `SyntaxError: Unexpected token ';'` |
+| `npm test` | FAIL — the test cannot load the module with invalid syntax |
 
-**Important:** This intentionally uses the build step to trigger `npm test`. The failed step will be `node-build`, not `node-test`. It avoids changes to your platform's pipeline templates or to its test detection rules.
+**Expected root-cause category:** `COMPILATION_FAILURE`.
 
-## To test on the platform
+The deliberate fault is in `src/main.mjs`: `export const pipelineMarker = ;`.
 
-1. Replace the files in the **disposable test repository** previously created on GitHub with these files and commit/push them. Do not put this change in the CI/CD platform's own repository.
-2. Create a fresh project/plan or reanalyze the repository if your existing pipeline plan is locked to the old revision. A new run should use the updated commit.
-3. Run your existing `node-install` → `node-build` pipeline.
-4. Verify runner logs contain `npm ... Missing script: "test"` and an Incident was created.
-5. From `infra/docker-compose`, inspect live fallback logs:
-   ```bash
-   docker logs --since 15m docker-compose-core-backend-1 2>&1 | grep -F 'Live knowledge fallback completed'
-   ```
-6. If the log is absent, external fallback may have been skipped because matching reviewed local knowledge existed or the diagnostic signature was not passed. This is not proof of a successful website lookup.
+A pipeline failure occurring during `npm test` is **still a compilation/syntax problem**, not necessarily `TEST_CONFIGURATION_FAILURE`. Use this example to compare your v2/v4 model predictions and inspect RAG matches. The predicted classification is not guaranteed.
 
-This repo is intentionally broken for a controlled experiment. No real project code should be modified.
+## Upload to GitHub
+
+Extract this ZIP. Create a new, empty GitHub repository and upload the *contents* of this folder, either using **Add file → Upload files** in GitHub or using Git. Do not upload only the ZIP file to the repository: the platform needs to analyze `package.json`, `package-lock.json`, and `src/`.
+
+In your DevOps platform, add the resulting GitHub repository URL, analyze it, compose/execute its Node.js pipeline, and inspect the failure-classification and RAG results.
+
+**Do not fix the syntax error** until you have finished testing the failure path. No CI/CD platform configurations, datasets, or model checkpoints need changing for this standalone demo.
