@@ -1,15 +1,24 @@
 {
-  "name": "lab-100-source-compilation",
+  "name": "rag-jsx-compilation-error-test",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
+  "description": "Intentional JSX compilation failure for CI/CD RAG and CodeBERT-v4 testing",
+  "engines": {"node": ">=20"},
   "scripts": {
-    "build": "node scripts/build.js",
-    "test": "node --test test/*.test.js",
-    "test:unit": "node --test test/unit*.test.js",
-    "test:integration": "node --test test/integration*.test.js"
+    "build": "vite build",
+    "test": "vitest run",
+    "test:ci": "vitest run"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.30",
+    "@types/react-dom": "18.3.7",
+    "typescript": "5.9.3",
+    "vite": "5.4.21",
+    "vitest": "2.1.9"
   }
 }

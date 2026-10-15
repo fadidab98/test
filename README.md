@@ -1,14 +1,29 @@
-# Multi-format audit export service
+# Intentional JSX compilation failure — RAG / CodeBERT-v4 test
 
-Layered audit export service: core rules, in-memory store, JSON encoder and a lazy-loaded CSV export plugin. The CSV plugin has a parsing defect in the source module and is only loaded by the end-to-end test.
+This is a **deliberately broken** small React + TypeScript + Vite + Vitest repository. It is intended for a controlled CI/CD failure experiment, not for production.
 
-## Platform use
+## Expected result
 
-1. Upload the files in this directory to a separate GitHub repository.
-2. Choose **Build and test**, **All detected tests**, **Strict lockfile install**, Node 20; Docker build is optional and not required for detection.
-3. The app deliberately contains ONE root-cause defect; keep it unchanged during initial classification experiments.
-4. Run `npm ci`, `npm run build`, `npm test` locally to reproduce.
+- `npm ci`: **PASS** (the repository includes a dependency lockfile)
+- `npm test`: **FAIL** while transforming `src/View.tsx`
+- `npm run build`: **FAIL** while transforming `src/View.tsx`
+- Expected diagnostic: `Unexpected closing "div" tag does not match opening "span" tag`
+- Target failure label for manual review: `COMPILATION_FAILURE`, since the JSX source cannot be transformed, even if a pipeline reports a failed `Node Test` step.
 
-No external npm dependencies. There are successful unit tests and a targeted failing integration/configuration test. No credentials or external network access required.
+## Usage with the CI/CD platform
 
-**Research note:** A deliberately constructed fixture is not an independent accuracy benchmark.
+1. Unzip into a **new folder** (do not overwrite the platform code).
+2. Push this folder's contents to a reachable Git repository or test branch.
+3. Create a project pointing to that repository/branch in the platform.
+4. Select/detect a Node.js pipeline that runs `npm ci`, then `npm test` (or `npm run build`).
+5. After the run fails, open **Incidents** (read-only predictions) and **AI Comparison** (review).
+
+## How to repair after the experiment
+
+Change `src/View.tsx`:
+
+```tsx
+return <span>RAG and CodeBERT-v4 classification check</span>;
+```
+
+Do not fix the code before the experiment or the intended failure will disappear.
