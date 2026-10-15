@@ -1,29 +1,21 @@
-# Intentional JSX compilation failure — RAG / CodeBERT-v4 test
+# RAG vs CodeBERT-v4 – intended JSX compilation failure
 
-This is a **deliberately broken** small React + TypeScript + Vite + Vitest repository. It is intended for a controlled CI/CD failure experiment, not for production.
+This is a minimal React + TypeScript fixture for testing failure classification in a CI/CD pipeline.
 
-## Expected result
+## Expected sequence
 
-- `npm ci`: **PASS** (the repository includes a dependency lockfile)
-- `npm test`: **FAIL** while transforming `src/View.tsx`
-- `npm run build`: **FAIL** while transforming `src/View.tsx`
-- Expected diagnostic: `Unexpected closing "div" tag does not match opening "span" tag`
-- Target failure label for manual review: `COMPILATION_FAILURE`, since the JSX source cannot be transformed, even if a pipeline reports a failed `Node Test` step.
+- `npm ci` → **SUCCESS** (the lockfile has no Vite / esbuild / native optional packages).
+- `npm test` → **FAILURE** because of an intentionally mismatched JSX tag in `src/View.tsx`.
+- `npm run build` → **FAILURE** for the same JSX syntax error.
 
-## Usage with the CI/CD platform
+**Expected category:** `COMPILATION_FAILURE` (not `DEPENDENCY_FAILURE`).
 
-1. Unzip into a **new folder** (do not overwrite the platform code).
-2. Push this folder's contents to a reachable Git repository or test branch.
-3. Create a project pointing to that repository/branch in the platform.
-4. Select/detect a Node.js pipeline that runs `npm ci`, then `npm test` (or `npm run build`).
-5. After the run fails, open **Incidents** (read-only predictions) and **AI Comparison** (review).
+> Do not fix `src/View.tsx` until after creating the failed pipeline and reviewing RAG and CodeBERT-v4 results.
 
-## How to repair after the experiment
+The failed test command invokes the real TypeScript compiler (`tsc --noEmit`). This fixture does not use Vite or Vitest intentionally to avoid unrelated dependency-install failures.
 
-Change `src/View.tsx`:
+## Example errors
 
-```tsx
-return <span>RAG and CodeBERT-v4 classification check</span>;
-```
+`TS17002: Expected corresponding JSX closing tag for 'span'.`
 
-Do not fix the code before the experiment or the intended failure will disappear.
+Upload these files to a new test repository and run the Node install and test steps of your CI/CD platform.
