@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#111b2b"/><title>Aegis Enterprise · Operations Center</title>
+<link rel="stylesheet" href="./styles.css"/></head>
+<body>
+  <div class="layout">
+    <aside class="sidebar"><div class="logo"><span class="mark">A</span><span>AEGIS<span class="muted"> / Ops</span></span></div>
+      <p class="nav-title">WORKSPACE</p>
+      <nav><a class="active" href="#overview">◈ &nbsp; Overview</a><a href="#inventory">▦ &nbsp; Inventory</a><a href="#orders">▤ &nbsp; Orders</a><a href="#events">⇄ &nbsp; Event Journal</a></nav>
+      <div class="side-bottom"><span class="status-dot"></span> All systems operational <p>CI/CD RAG Stress Lab · v1.0</p></div>
+    </aside>
+    <main class="content"><header><div><p class="eyebrow">ENTERPRISE COMMERCE / CONTROL PLANE</p><h1>Operations Center</h1><p class="subtitle">Order fulfillment, inventory consistency and live delivery insights</p></div><div class="actions"><span class="pill">● DEMO ENVIRONMENT</span><button id="refresh">↻ &nbsp; Refresh</button></div></header>
+    <div id="error" class="error hidden"></div>
+    <section class="metrics" id="overview"><article class="metric"><span>Confirmed orders</span><strong id="metric-orders">—</strong><small>Current tenant</small></article><article class="metric"><span>Gross volume</span><strong id="metric-revenue">—</strong><small>EUR · VAT included</small></article><article class="metric"><span>Success rate</span><strong id="metric-slo">—</strong><small>Order workflow</small></article><article class="metric"><span>Pending messages</span><strong id="metric-events">—</strong><small>Transactional outbox</small></article></section>
+    <div class="columns"><section class="panel" id="inventory"><div class="panel-head"><div><h2>Inventory overview</h2><p>Stock reservations and availability</p></div><span class="panel-tag">LIVE</span></div><table><thead><tr><th>SKU</th><th>On hand</th><th>Status</th></tr></thead><tbody id="inventory-body"><tr><td colspan="3">Loading...</td></tr></tbody></table></section>
+    <section class="panel"><div class="panel-head"><div><h2>Create order</h2><p>Execute order orchestration saga</p></div></div><form id="order-form"><label>SKU<select id="sku" required><option>LAPTOP-14</option><option>DOCK-USB-C</option><option>KEYBOARD-MECH</option><option>MONITOR-27</option><option>HEADSET-PRO</option></select></label><label>Quantity<input id="qty" type="number" value="1" min="1" max="20" required/></label><button class="primary" type="submit">+ Create order</button></form><div id="submit-result" class="feedback"></div><hr/><button id="flush" class="secondary">Flush outbox to event journal ↗</button></section></div>
+    <section class="panel" id="orders"><div class="panel-head"><div><h2>Recent orders</h2><p>Confirmed orders and audit state</p></div></div><table><thead><tr><th>Order ID</th><th>Customer</th><th>State</th><th>Total</th></tr></thead><tbody id="orders-body"><tr><td colspan="4">Loading...</td></tr></tbody></table></section>
+    <section class="panel" id="events"><div class="panel-head"><div><h2>Event journal</h2><p>Append-only hashed audit chain</p></div><span id="integrity">CHECKING INTEGRITY</span></div><div class="event-list" id="events-body"></div></section>
+    <footer>AEGIS · Demonstration workload for reproducible DevOps failure-classification research. No real payment processing.</footer></main>
+  </div><script type="module" src="./main.js"></script>
+</body></html>

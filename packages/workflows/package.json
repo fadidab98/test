@@ -1,0 +1,11 @@
+{
+  "name": "@aegis/workflows",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Order fulfillment saga and compensations",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": "./src/index.mjs"
+}

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aegis-api-config
+  namespace: aegis-stress-lab
+data:
+  NODE_ENV: production
+  PORT: "8080"
+  AEGIS_DEFAULT_TENANT: tenant-demo

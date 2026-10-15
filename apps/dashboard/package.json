@@ -1,0 +1,10 @@
+{
+  "name": "@aegis/dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Vanilla JavaScript operations dashboard",
+  "engines": {
+    "node": ">=20"
+  }
+}

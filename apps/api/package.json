@@ -1,0 +1,10 @@
+{
+  "name": "@aegis/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "HTTP API and application composition",
+  "engines": {
+    "node": ">=20"
+  }
+}

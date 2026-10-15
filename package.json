@@ -1,24 +1,37 @@
 {
-  "name": "rag-jsx-compilation-error-test",
+  "name": "aegis-enterprise-cicd-stress-lab",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "React and TypeScript CI fixture with intentionally invalid JSX; install must succeed, compilation must fail.",
+  "description": "High-complexity, reproducible enterprise Node.js monorepo to benchmark DevOps failure classification, RAG and CodeBERT-v4.",
   "engines": {
-    "node": ">=20"
+    "node": ">=20 <23",
+    "npm": ">=9"
   },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
-    "test": "tsc --noEmit",
-    "test:ci": "tsc --noEmit",
-    "build": "tsc --noEmit"
+    "build": "node tools/build.mjs",
+    "test": "node tools/test.mjs",
+    "test:ci": "node tools/test.mjs",
+    "lint": "node tools/lint.mjs",
+    "start": "node apps/api/src/main.mjs",
+    "start:worker": "node apps/worker/src/main.mjs",
+    "dev": "node --watch apps/api/src/main.mjs",
+    "scenario": "node tools/scenario.mjs",
+    "smoke": "node tools/smoke.mjs",
+    "verify": "npm run lint && npm run build && npm test"
   },
-  "dependencies": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
-  "devDependencies": {
-    "@types/react": "18.3.30",
-    "@types/react-dom": "18.3.7",
-    "typescript": "5.9.3"
-  }
+  "license": "MIT",
+  "keywords": [
+    "aiops",
+    "rag",
+    "ci-cd",
+    "devops",
+    "fault-injection",
+    "benchmark",
+    "monorepo"
+  ]
 }

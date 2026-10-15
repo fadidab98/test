@@ -1,0 +1,33 @@
+{
+  "dashboard": {
+    "entryFile": "apps/dashboard/src/main.js",
+    "outputDir": "dist/dashboard"
+  },
+  "server": {
+    "entryFile": "apps/api/src/main.mjs",
+    "port": 8080
+  },
+  "worker": {
+    "entryFile": "apps/worker/src/main.mjs"
+  },
+  "minNodeMajor": 20,
+  "requiredWorkspaces": [
+    "@aegis/contracts",
+    "@aegis/domain",
+    "@aegis/security",
+    "@aegis/persistence",
+    "@aegis/messaging",
+    "@aegis/observability",
+    "@aegis/workflows",
+    "@aegis/analytics",
+    "@aegis/api",
+    "@aegis/worker",
+    "@aegis/dashboard"
+  ],
+  "qualityGates": [
+    "syntax",
+    "workspace-boundaries",
+    "api-contract",
+    "dashboard-assets"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@aegis/messaging",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Message bus, outbox and delivery semantics",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": "./src/index.mjs"
+}

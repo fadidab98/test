@@ -1,0 +1,11 @@
+{
+  "name": "@aegis/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared domain contracts and event schemas",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": "./src/index.mjs"
+}
