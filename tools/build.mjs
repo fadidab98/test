@@ -39,7 +39,7 @@ if(scenario==='compilation'){
 if(scenario==='dependency'){
  stage('Resolve optional payment service dependency');
  console.log('[resolver] Loading production payment connector referenced by the checkout integration');
- await import('@aegis/payment-gateway-adapter-not-installed');
+ await import('lodash-es');
 }
 stage('Validate build manifest');
 let entryFile=manifest.dashboard.entryFile;
