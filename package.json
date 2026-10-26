@@ -1,14 +1,1 @@
-{
-  "name": "devops-error-lab",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "engines": {
-    "node": ">=22"
-  },
-  "scripts": {
-    "build": "node scripts/build.js",
-    "test": "node --test test/*.test.js",
-    "start": "node src/main.js"
-  }
-}
+{ "name": "devops-error-lab", invalid manifest
