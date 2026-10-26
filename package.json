@@ -4,14 +4,11 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=99.0.0"
   },
   "scripts": {
     "build": "node scripts/build.js",
     "test": "node --test test/*.test.js",
     "start": "node src/main.js"
-  },
-  "dependencies": {
-    "lab-missing-package": "file:./missing-vendor-package/package.tgz"
   }
 }
