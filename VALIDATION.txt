@@ -1,0 +1,1 @@
+Baseline install/test/build passed on Node 24.22.1 / npm 11.9.0. All 13 non-Docker scenarios (01-09,12-15) produced expected nonzero exits. Docker scenarios 10,11,16, Docker wrapper on Windows, Node 22 and Git publishing were not executed in this environment. Cases are synthetic exploratory data, not an independent benchmark.

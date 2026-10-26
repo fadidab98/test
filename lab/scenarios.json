@@ -1,0 +1,165 @@
+[
+  {
+    "id": "01",
+    "title": "Missing npm lockfile",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "files": {
+      "package-lock.json": null
+    },
+    "command": "npm ci",
+    "synthetic": true
+  },
+  {
+    "id": "02",
+    "title": "Dependency local path does not exist",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "files": {
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.mjs\",\n    \"test\": \"node --test test/*.test.mjs\",\n    \"start\": \"node src/main.mjs\"\n  },\n  \"dependencies\": {\n    \"lab-missing-package\": \"file:./missing-vendor-package/package.tgz\"\n  }\n}\n"
+    },
+    "command": "npm install --ignore-scripts --no-audit --no-fund",
+    "synthetic": true
+  },
+  {
+    "id": "03",
+    "title": "Node engine incompatible",
+    "expected_category": "RUNTIME_MISMATCH",
+    "files": {
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=99.0.0\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.mjs\",\n    \"test\": \"node --test test/*.test.mjs\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n",
+      ".npmrc": "engine-strict=true\n"
+    },
+    "command": "npm ci",
+    "synthetic": true
+  },
+  {
+    "id": "04",
+    "title": "Missing build entry script",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "files": {
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/nonexistent-build.mjs\",\n    \"test\": \"node --test test/*.test.mjs\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n"
+    },
+    "command": "npm run build",
+    "synthetic": true
+  },
+  {
+    "id": "05",
+    "title": "Invalid build command option",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "files": {
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node --lab-invalid-build-option scripts/build.mjs\",\n    \"test\": \"node --test test/*.test.mjs\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n"
+    },
+    "command": "npm run build",
+    "synthetic": true
+  },
+  {
+    "id": "06",
+    "title": "Syntax error in source",
+    "expected_category": "COMPILATION_FAILURE",
+    "files": {
+      "src/math.mjs": "export function add(a, b) { return a + ; }\n"
+    },
+    "command": "npm run build",
+    "synthetic": true
+  },
+  {
+    "id": "07",
+    "title": "Broken static module import",
+    "expected_category": "COMPILATION_FAILURE",
+    "files": {
+      "src/main.mjs": "import { add } from './does-not-exist.mjs';\nconsole.log(add(2,3));\n",
+      "scripts/build.mjs": "import { mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nfor (const f of ['src/math.mjs', 'src/main.mjs']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});\nmkdirSync('dist', {recursive:true});\nfor (const f of ['math.mjs', 'main.mjs']) copyFileSync('src/'+f, 'dist/'+f);\nconsole.log('Build complete');\nawait import('../src/main.mjs');\n"
+    },
+    "command": "npm run build",
+    "synthetic": true
+  },
+  {
+    "id": "08",
+    "title": "Test runner file missing",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "files": {
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.mjs\",\n    \"test\": \"node test/nonexistent-runner.mjs\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n"
+    },
+    "command": "npm test",
+    "synthetic": true
+  },
+  {
+    "id": "09",
+    "title": "Invalid test runner option",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "files": {
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.mjs\",\n    \"test\": \"node --test --lab-invalid-test-option\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n"
+    },
+    "command": "npm test",
+    "synthetic": true
+  },
+  {
+    "id": "10",
+    "title": "Docker COPY source missing",
+    "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+    "files": {
+      "Dockerfile": "FROM node:22-alpine\nWORKDIR /app\nCOPY nonexistent-directory /app/src\n"
+    },
+    "command": "docker build --progress=plain -t devops-error-lab:case-10 .",
+    "synthetic": true
+  },
+  {
+    "id": "11",
+    "title": "Unknown Dockerfile instruction",
+    "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+    "files": {
+      "Dockerfile": "FROM node:22-alpine\nNOT_A_DOCKER_INSTRUCTION true\n"
+    },
+    "command": "docker build --progress=plain -t devops-error-lab:case-11 .",
+    "synthetic": true
+  },
+  {
+    "id": "12",
+    "title": "Invalid npm lockfile JSON",
+    "expected_category": "DEPENDENCY_FAILURE",
+    "files": {
+      "package-lock.json": "{ invalid lockfile json\n"
+    },
+    "command": "npm ci",
+    "synthetic": true
+  },
+  {
+    "id": "13",
+    "title": "Malformed package manifest JSON",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "files": {
+      "package.json": "{ \"name\": \"devops-error-lab\", invalid manifest\n"
+    },
+    "command": "npm run build",
+    "synthetic": true
+  },
+  {
+    "id": "14",
+    "title": "Imported named export does not exist",
+    "expected_category": "COMPILATION_FAILURE",
+    "files": {
+      "src/main.mjs": "import { subtract } from './math.mjs';\nconsole.log(subtract(5,2));\n",
+      "scripts/build.mjs": "import { mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nfor (const f of ['src/math.mjs', 'src/main.mjs']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});\nmkdirSync('dist', {recursive:true});\nfor (const f of ['math.mjs', 'main.mjs']) copyFileSync('src/'+f, 'dist/'+f);\nconsole.log('Build complete');\nawait import('../src/main.mjs');\n"
+    },
+    "command": "npm run build",
+    "synthetic": true
+  },
+  {
+    "id": "15",
+    "title": "Test fixture file missing",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "files": {
+      "test/math.test.mjs": "import test from 'node:test';\nimport { readFileSync } from 'node:fs';\ntest('loads fixture', () => { readFileSync(new URL('./fixtures/missing.json', import.meta.url)); });\n"
+    },
+    "command": "npm test",
+    "synthetic": true
+  },
+  {
+    "id": "16",
+    "title": "Circular Docker build-stage dependency",
+    "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+    "files": {
+      "Dockerfile": "FROM node:22-alpine AS build\nCOPY --from=build /app/dist /app/dist\n"
+    },
+    "command": "docker build --progress=plain -t devops-error-lab:case-16 .",
+    "synthetic": true
+  }
+]

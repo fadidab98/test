@@ -1,37 +1,14 @@
 {
-  "name": "aegis-enterprise-cicd-stress-lab",
+  "name": "devops-error-lab",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "High-complexity, reproducible enterprise Node.js monorepo to benchmark DevOps failure classification, RAG and CodeBERT-v4.",
   "engines": {
-    "node": ">=20 <23",
-    "npm": ">=9"
+    "node": ">=22"
   },
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
   "scripts": {
-    "build": "node tools/build.mjs",
-    "test": "node tools/test.mjs",
-    "test:ci": "node tools/test.mjs",
-    "lint": "node tools/lint.mjs",
-    "start": "node apps/api/src/main.mjs",
-    "start:worker": "node apps/worker/src/main.mjs",
-    "dev": "node --watch apps/api/src/main.mjs",
-    "scenario": "node tools/scenario.mjs",
-    "smoke": "node tools/smoke.mjs",
-    "verify": "npm run lint && npm run build && npm test"
-  },
-  "license": "MIT",
-  "keywords": [
-    "aiops",
-    "rag",
-    "ci-cd",
-    "devops",
-    "fault-injection",
-    "benchmark",
-    "monorepo"
-  ]
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "start": "node src/main.mjs"
+  }
 }

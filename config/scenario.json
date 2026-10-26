@@ -1,4 +1,0 @@
-{
-  "active": "dependency",
-  "purpose": "Reproducible CI failure benchmark. Commit this scenario selection before importing the repo."
-}

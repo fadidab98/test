@@ -1,6 +1,4 @@
 .git
 node_modules
-dist
-coverage
-*.zip
-*.log
+results
+lab
