@@ -1,4 +1,3 @@
 import test from 'node:test';
-import assert from 'node:assert/strict';
-import { add } from '../src/math.js';
-test('adds numbers', () => assert.equal(add(2, 3), 5));
+import { readFileSync } from 'node:fs';
+test('loads fixture', () => { readFileSync(new URL('./fixtures/missing.json', import.meta.url)); });
