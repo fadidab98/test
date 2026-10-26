@@ -1,2 +1,2 @@
-import { add } from './math.js';
-console.log('Result:', add(2, 3));
+import { add } from './does-not-exist.js';
+console.log(add(2,3));
