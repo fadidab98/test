@@ -7,7 +7,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "node scripts/nonexistent-build.js",
+    "build": "node --lab-invalid-build-option scripts/build.js",
     "test": "node --test test/*.test.js",
     "start": "node src/main.js"
   }
