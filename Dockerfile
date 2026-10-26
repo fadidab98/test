@@ -6,4 +6,4 @@ COPY src ./src
 COPY scripts ./scripts
 COPY test ./test
 RUN npm test && npm run build
-CMD ["node", "dist/main.mjs"]
+CMD ["node", "dist/main.js"]

@@ -9,23 +9,23 @@ node_lab() { docker run --rm -v "$ROOT:/app" -w /app "$IMAGE" node "$@"; }
 action="${1:-help}"
 id="${2:-}"
 case "$action" in
- list) node_lab lab/apply.mjs list ;;
- apply) node_lab lab/apply.mjs "$id" ;;
- reset) node_lab lab/apply.mjs reset ;;
+ list) node_lab lab/apply.js list ;;
+ apply) node_lab lab/apply.js "$id" ;;
+ reset) node_lab lab/apply.js reset ;;
  baseline)
-  node_lab lab/apply.mjs reset
+  node_lab lab/apply.js reset
   docker run --rm -v "$ROOT:/app" -w /app "$IMAGE" sh -c 'npm ci && npm test && npm run build'
   ;;
  run)
   [[ "$id" =~ ^(0[1-9]|1[0-6])$ ]] || { echo 'Use: bash lab.sh run 01..16'; exit 2; }
-  node_lab lab/apply.mjs "$id"
+  node_lab lab/apply.js "$id"
   mkdir -p results
   set +e
   if [[ "$id" == 10 || "$id" == 11 || "$id" == 16 ]]; then
    docker build --progress=plain -t "devops-error-lab:case-$id" . >"results/$id.log" 2>&1
    code=$?
   else
-   docker run --rm -v "$ROOT:/app" -w /app "$IMAGE" node lab/execute.mjs "$id" >"results/$id.log" 2>&1
+   docker run --rm -v "$ROOT:/app" -w /app "$IMAGE" node lab/execute.js "$id" >"results/$id.log" 2>&1
    code=$?
   fi
   set -e
@@ -52,7 +52,7 @@ case "$action" in
   [[ -z "$(git status --porcelain)" ]] || { echo 'Commit or save existing changes first.'; exit 2; }
   branch="$(git branch --show-current)"
   [[ -n "$branch" ]] || { echo 'Detached HEAD is not supported.'; exit 2; }
-  node_lab lab/apply.mjs "$id"
+  node_lab lab/apply.js "$id"
   git add -- package.json package-lock.json src scripts test Dockerfile
   if [[ -f .npmrc ]] || git ls-files --error-unmatch .npmrc >/dev/null 2>&1; then git add -A -- .npmrc; fi
   git commit --allow-empty -m "lab: inject scenario $id"

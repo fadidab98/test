@@ -14,7 +14,7 @@
     "title": "Dependency local path does not exist",
     "expected_category": "DEPENDENCY_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.mjs\",\n    \"test\": \"node --test test/*.test.mjs\",\n    \"start\": \"node src/main.mjs\"\n  },\n  \"dependencies\": {\n    \"lab-missing-package\": \"file:./missing-vendor-package/package.tgz\"\n  }\n}\n"
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  },\n  \"dependencies\": {\n    \"lab-missing-package\": \"file:./missing-vendor-package/package.tgz\"\n  }\n}\n"
     },
     "command": "npm install --ignore-scripts --no-audit --no-fund",
     "synthetic": true
@@ -24,7 +24,7 @@
     "title": "Node engine incompatible",
     "expected_category": "RUNTIME_MISMATCH",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=99.0.0\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.mjs\",\n    \"test\": \"node --test test/*.test.mjs\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n",
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=99.0.0\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n",
       ".npmrc": "engine-strict=true\n"
     },
     "command": "npm ci",
@@ -35,7 +35,7 @@
     "title": "Missing build entry script",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/nonexistent-build.mjs\",\n    \"test\": \"node --test test/*.test.mjs\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n"
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/nonexistent-build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
     },
     "command": "npm run build",
     "synthetic": true
@@ -45,7 +45,7 @@
     "title": "Invalid build command option",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node --lab-invalid-build-option scripts/build.mjs\",\n    \"test\": \"node --test test/*.test.mjs\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n"
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node --lab-invalid-build-option scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
     },
     "command": "npm run build",
     "synthetic": true
@@ -55,7 +55,7 @@
     "title": "Syntax error in source",
     "expected_category": "COMPILATION_FAILURE",
     "files": {
-      "src/math.mjs": "export function add(a, b) { return a + ; }\n"
+      "src/math.js": "export function add(a, b) { return a + ; }\n"
     },
     "command": "npm run build",
     "synthetic": true
@@ -65,8 +65,8 @@
     "title": "Broken static module import",
     "expected_category": "COMPILATION_FAILURE",
     "files": {
-      "src/main.mjs": "import { add } from './does-not-exist.mjs';\nconsole.log(add(2,3));\n",
-      "scripts/build.mjs": "import { mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nfor (const f of ['src/math.mjs', 'src/main.mjs']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});\nmkdirSync('dist', {recursive:true});\nfor (const f of ['math.mjs', 'main.mjs']) copyFileSync('src/'+f, 'dist/'+f);\nconsole.log('Build complete');\nawait import('../src/main.mjs');\n"
+      "src/main.js": "import { add } from './does-not-exist.js';\nconsole.log(add(2,3));\n",
+      "scripts/build.js": "import { mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nfor (const f of ['src/math.js', 'src/main.js']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});\nmkdirSync('dist', {recursive:true});\nfor (const f of ['math.js', 'main.js']) copyFileSync('src/'+f, 'dist/'+f);\nconsole.log('Build complete');\nawait import('../src/main.js');\n"
     },
     "command": "npm run build",
     "synthetic": true
@@ -76,7 +76,7 @@
     "title": "Test runner file missing",
     "expected_category": "TEST_CONFIGURATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.mjs\",\n    \"test\": \"node test/nonexistent-runner.mjs\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n"
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node test/nonexistent-runner.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
     },
     "command": "npm test",
     "synthetic": true
@@ -86,7 +86,7 @@
     "title": "Invalid test runner option",
     "expected_category": "TEST_CONFIGURATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.mjs\",\n    \"test\": \"node --test --lab-invalid-test-option\",\n    \"start\": \"node src/main.mjs\"\n  }\n}\n"
+      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test --lab-invalid-test-option\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
     },
     "command": "npm test",
     "synthetic": true
@@ -136,8 +136,8 @@
     "title": "Imported named export does not exist",
     "expected_category": "COMPILATION_FAILURE",
     "files": {
-      "src/main.mjs": "import { subtract } from './math.mjs';\nconsole.log(subtract(5,2));\n",
-      "scripts/build.mjs": "import { mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nfor (const f of ['src/math.mjs', 'src/main.mjs']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});\nmkdirSync('dist', {recursive:true});\nfor (const f of ['math.mjs', 'main.mjs']) copyFileSync('src/'+f, 'dist/'+f);\nconsole.log('Build complete');\nawait import('../src/main.mjs');\n"
+      "src/main.js": "import { subtract } from './math.js';\nconsole.log(subtract(5,2));\n",
+      "scripts/build.js": "import { mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nfor (const f of ['src/math.js', 'src/main.js']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});\nmkdirSync('dist', {recursive:true});\nfor (const f of ['math.js', 'main.js']) copyFileSync('src/'+f, 'dist/'+f);\nconsole.log('Build complete');\nawait import('../src/main.js');\n"
     },
     "command": "npm run build",
     "synthetic": true
@@ -147,7 +147,7 @@
     "title": "Test fixture file missing",
     "expected_category": "TEST_CONFIGURATION_FAILURE",
     "files": {
-      "test/math.test.mjs": "import test from 'node:test';\nimport { readFileSync } from 'node:fs';\ntest('loads fixture', () => { readFileSync(new URL('./fixtures/missing.json', import.meta.url)); });\n"
+      "test/math.test.js": "import test from 'node:test';\nimport { readFileSync } from 'node:fs';\ntest('loads fixture', () => { readFileSync(new URL('./fixtures/missing.json', import.meta.url)); });\n"
     },
     "command": "npm test",
     "synthetic": true
