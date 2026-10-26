@@ -1,3 +1,2 @@
 FROM node:22-alpine
-WORKDIR /app
-COPY nonexistent-directory /app/src
+NOT_A_DOCKER_INSTRUCTION true
