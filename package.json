@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=99.0.0"
+    "node": ">=22"
   },
   "scripts": {
-    "build": "node scripts/build.js",
+    "build": "node scripts/nonexistent-build.js",
     "test": "node --test test/*.test.js",
     "start": "node src/main.js"
   }
