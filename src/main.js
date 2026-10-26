@@ -1,2 +1,2 @@
-import { add } from './math.js';
-console.log('Result:', add(2, 3));
+import { subtract } from './math.js';
+console.log(subtract(5,2));
