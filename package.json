@@ -9,7 +9,6 @@
   "scripts": {
     "build": "node scripts/build.js",
     "test": "node --test test/*.test.js",
-    "start": "node src/main.js",
-    "preinstall": "npm pack ./vendor/helper --ignore-scripts --offline"
+    "start": "node src/main.js"
   }
 }

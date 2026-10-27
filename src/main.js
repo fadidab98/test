@@ -1,2 +1,2 @@
-import { total } from './ledger.js';
-console.log('Planned hours:', total([{hours:2},{hours:3}]));
+import value from '#ledger-internal-alias';
+console.log(value);
