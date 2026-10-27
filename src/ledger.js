@@ -1,2 +1,1 @@
-const hours=5; export {hours}; export {hours};
-export function total(){return hours;}
+export function total(tasks) { return tasks.reduce((sum, task) => sum + task.hours, 0); }

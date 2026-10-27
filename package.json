@@ -10,5 +10,8 @@
     "build": "node scripts/build.js",
     "test": "node --test test/*.test.js",
     "start": "node src/main.js"
+  },
+  "dependencies": {
+    "invalid package name": "1.0.0"
   }
 }
