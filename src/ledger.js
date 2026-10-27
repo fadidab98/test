@@ -1,2 +1,2 @@
-class Ledger { value() { return this.#hours; } }
-export function total() {return new Ledger().value();}
+const hours=5; export {hours}; export {hours};
+export function total(){return hours;}
