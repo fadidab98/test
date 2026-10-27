@@ -17,11 +17,11 @@ case "$action" in
   docker run --rm -v "$ROOT:/app" -w /app "$IMAGE" sh -c 'npm ci && npm test && npm run build'
   ;;
  run)
-  [[ "$id" =~ ^(0[1-9]|1[0-6])$ ]] || { echo 'Use: bash lab.sh run 01..16'; exit 2; }
+  [[ "$id" =~ ^(0[1-9]|1[0-9]|20)$ ]] || { echo 'Use: bash lab.sh run 01..20'; exit 2; }
   node_lab lab/apply.js "$id"
   mkdir -p results
   set +e
-  if [[ "$id" == 10 || "$id" == 11 || "$id" == 16 ]]; then
+  if [[ "$id" == 19 || "$id" == 20 ]]; then
    docker build --progress=plain -t "devops-error-lab:case-$id" . >"results/$id.log" 2>&1
    code=$?
   else
@@ -37,7 +37,7 @@ case "$action" in
   ;;
  all)
   failed=0
-  for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16; do
+  for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20; do
    if bash lab.sh run "$n"; then echo "UNEXPECTED PASS: $n"; failed=1
    elif [[ "$(cat "results/$n.exit-code" 2>/dev/null || true)" == 125 ]]; then echo "Docker infrastructure error: $n"; failed=1
    fi
@@ -47,13 +47,13 @@ case "$action" in
   exit "$failed"
   ;;
  publish)
-  [[ "$id" =~ ^(0[1-9]|1[0-6])$ ]] || { echo 'Use: bash lab.sh publish 01..16'; exit 2; }
+  [[ "$id" =~ ^(0[1-9]|1[0-9]|20)$ ]] || { echo 'Use: bash lab.sh publish 01..20'; exit 2; }
   git rev-parse --is-inside-work-tree >/dev/null
   [[ -z "$(git status --porcelain)" ]] || { echo 'Commit or save existing changes first.'; exit 2; }
   branch="$(git branch --show-current)"
   [[ -n "$branch" ]] || { echo 'Detached HEAD is not supported.'; exit 2; }
   node_lab lab/apply.js "$id"
-  git add -- package.json package-lock.json src scripts test Dockerfile
+  git add -- package.json package-lock.json src scripts test config vendor Dockerfile output-marker.txt
   if [[ -f .npmrc ]] || git ls-files --error-unmatch .npmrc >/dev/null 2>&1; then git add -A -- .npmrc; fi
   git commit --allow-empty -m "lab: inject scenario $id"
   git push -u origin "$branch"

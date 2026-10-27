@@ -1,165 +1,205 @@
 [
   {
     "id": "01",
-    "title": "Missing npm lockfile",
-    "expected_category": "DEPENDENCY_FAILURE",
+    "title": "Build script key absent from npm scripts",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "files": {
-      "package-lock.json": null
+      "package.json": "{\n  \"name\": \"task-ledger-new20\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=20\"\n  },\n  \"scripts\": {\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
     },
-    "command": "npm ci",
+    "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "02",
-    "title": "Dependency local path does not exist",
-    "expected_category": "DEPENDENCY_FAILURE",
+    "title": "Build command changes into nonexistent working directory",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  },\n  \"dependencies\": {\n    \"lab-missing-package\": \"file:./missing-vendor-package/package.tgz\"\n  }\n}\n"
+      "package.json": "{\n  \"name\": \"task-ledger-new20\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=20\"\n  },\n  \"scripts\": {\n    \"build\": \"cd absent-workspace && node build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
     },
-    "command": "npm install --ignore-scripts --no-audit --no-fund",
+    "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "03",
-    "title": "Node engine incompatible",
-    "expected_category": "RUNTIME_MISMATCH",
+    "title": "Unsupported build output format",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=99.0.0\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n",
-      ".npmrc": "engine-strict=true\n"
+      "config/build.json": "{\"format\":\"unsupported-binary\",\"output\":\"dist\"}"
     },
-    "command": "npm ci",
+    "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "04",
-    "title": "Missing build entry script",
+    "title": "Valid JSON but wrong build configuration shape",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/nonexistent-build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
+      "config/build.json": "[\"esm\",\"dist\"]"
     },
     "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "05",
-    "title": "Invalid build command option",
+    "title": "Build output directory collides with existing file",
     "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node --lab-invalid-build-option scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
+      "config/build.json": "{\"format\":\"esm\",\"output\":\"output-marker.txt\"}"
     },
     "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "06",
-    "title": "Syntax error in source",
-    "expected_category": "COMPILATION_FAILURE",
+    "title": "Build output parent is a regular file",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "files": {
-      "src/math.js": "export function add(a, b) { return a + ; }\n"
+      "config/build.json": "{\"format\":\"esm\",\"output\":\"output-marker.txt/nested\"}"
     },
     "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "07",
-    "title": "Broken static module import",
+    "title": "Duplicate lexical declaration in application source",
     "expected_category": "COMPILATION_FAILURE",
     "files": {
-      "src/main.js": "import { add } from './does-not-exist.js';\nconsole.log(add(2,3));\n",
-      "scripts/build.js": "import { mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nfor (const f of ['src/math.js', 'src/main.js']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});\nmkdirSync('dist', {recursive:true});\nfor (const f of ['math.js', 'main.js']) copyFileSync('src/'+f, 'dist/'+f);\nconsole.log('Build complete');\nawait import('../src/main.js');\n"
+      "src/ledger.js": "const hours=1; const hours=2;\nexport function total() {return hours;}\n"
     },
     "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "08",
-    "title": "Test runner file missing",
-    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "title": "Await used in a non-async function",
+    "expected_category": "COMPILATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node test/nonexistent-runner.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
+      "src/ledger.js": "export function total() { await Promise.resolve(5); }\n"
     },
-    "command": "npm test",
+    "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "09",
-    "title": "Invalid test runner option",
-    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "title": "Undeclared private class field",
+    "expected_category": "COMPILATION_FAILURE",
     "files": {
-      "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test --lab-invalid-test-option\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
+      "src/ledger.js": "class Ledger { value() { return this.#hours; } }\nexport function total() {return new Ledger().value();}\n"
     },
-    "command": "npm test",
+    "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "10",
-    "title": "Docker COPY source missing",
-    "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+    "title": "Duplicate named export",
+    "expected_category": "COMPILATION_FAILURE",
     "files": {
-      "Dockerfile": "FROM node:22-alpine\nWORKDIR /app\nCOPY nonexistent-directory /app/src\n"
+      "src/ledger.js": "const hours=5; export {hours}; export {hours};\nexport function total(){return hours;}\n"
     },
-    "command": "docker build --progress=plain -t devops-error-lab:case-10 .",
+    "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "11",
-    "title": "Unknown Dockerfile instruction",
-    "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+    "title": "Invalid dependency package name",
+    "expected_category": "DEPENDENCY_FAILURE",
     "files": {
-      "Dockerfile": "FROM node:22-alpine\nNOT_A_DOCKER_INSTRUCTION true\n"
+      "package.json": "{\n  \"name\": \"task-ledger-new20\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=20\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  },\n  \"dependencies\": {\n    \"invalid package name\": \"1.0.0\"\n  }\n}\n"
     },
-    "command": "docker build --progress=plain -t devops-error-lab:case-11 .",
+    "command": "npm install --offline --ignore-scripts --no-audit --no-fund",
     "synthetic": true
   },
   {
     "id": "12",
-    "title": "Invalid npm lockfile JSON",
+    "title": "Malformed manifest inside a local vendor dependency",
     "expected_category": "DEPENDENCY_FAILURE",
     "files": {
-      "package-lock.json": "{ invalid lockfile json\n"
+      "package.json": "{\n  \"name\": \"task-ledger-new20\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=20\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\",\n    \"preinstall\": \"npm pack ./vendor/helper --ignore-scripts --offline\"\n  }\n}\n",
+      "vendor/helper/package.json": "{\"name\":\"ledger-helper\", broken dependency manifest\n"
     },
     "command": "npm ci",
     "synthetic": true
   },
   {
     "id": "13",
-    "title": "Malformed package manifest JSON",
-    "expected_category": "BUILD_CONFIGURATION_FAILURE",
+    "title": "Undefined internal package import alias",
+    "expected_category": "DEPENDENCY_FAILURE",
     "files": {
-      "package.json": "{ \"name\": \"devops-error-lab\", invalid manifest\n"
+      "src/main.js": "import value from '#ledger-internal-alias';\nconsole.log(value);\n"
     },
     "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "14",
-    "title": "Imported named export does not exist",
-    "expected_category": "COMPILATION_FAILURE",
+    "title": "Unsupported URL protocol in module import",
+    "expected_category": "BUILD_CONFIGURATION_FAILURE",
     "files": {
-      "src/main.js": "import { subtract } from './math.js';\nconsole.log(subtract(5,2));\n",
-      "scripts/build.js": "import { mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nfor (const f of ['src/math.js', 'src/main.js']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});\nmkdirSync('dist', {recursive:true});\nfor (const f of ['math.js', 'main.js']) copyFileSync('src/'+f, 'dist/'+f);\nconsole.log('Build complete');\nawait import('../src/main.js');\n"
+      "src/main.js": "import value from 'ftp://localhost/ledger.js';\nconsole.log(value);\n"
     },
     "command": "npm run build",
     "synthetic": true
   },
   {
     "id": "15",
-    "title": "Test fixture file missing",
+    "title": "Configured test reporter module absent",
     "expected_category": "TEST_CONFIGURATION_FAILURE",
     "files": {
-      "test/math.test.js": "import test from 'node:test';\nimport { readFileSync } from 'node:fs';\ntest('loads fixture', () => { readFileSync(new URL('./fixtures/missing.json', import.meta.url)); });\n"
+      "package.json": "{\n  \"name\": \"task-ledger-new20\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=20\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test --test-reporter=./test/absent-reporter.js test/ledger.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n"
     },
     "command": "npm test",
     "synthetic": true
   },
   {
     "id": "16",
-    "title": "Circular Docker build-stage dependency",
+    "title": "Configured test reporter exports invalid value",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "files": {
+      "package.json": "{\n  \"name\": \"task-ledger-new20\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=20\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test --test-reporter=./test/reporter.js test/ledger.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n",
+      "test/reporter.js": "export default 42;\n"
+    },
+    "command": "npm test",
+    "synthetic": true
+  },
+  {
+    "id": "17",
+    "title": "Test fixture exists but contains invalid JSON",
+    "expected_category": "TEST_CONFIGURATION_FAILURE",
+    "files": {
+      "test/fixtures/tasks.json": "[{\"hours\":}]\n",
+      "test/ledger.test.js": "import test from 'node:test';\nimport { readFileSync } from 'node:fs';\ntest('load task fixture', () => JSON.parse(readFileSync(new URL('./fixtures/tasks.json',import.meta.url),'utf8')));\n"
+    },
+    "command": "npm test",
+    "synthetic": true
+  },
+  {
+    "id": "18",
+    "title": "Valid test produces an ordinary assertion failure",
+    "expected_category": "UNKNOWN",
+    "files": {
+      "test/ledger.test.js": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { total } from '../src/ledger.js';\ntest('total work hours', () => assert.equal(total([{hours:2},{hours:3}]),99));\n"
+    },
+    "command": "npm test",
+    "synthetic": true
+  },
+  {
+    "id": "19",
+    "title": "Docker EXPOSE has an invalid port",
     "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
     "files": {
-      "Dockerfile": "FROM node:22-alpine AS build\nCOPY --from=build /app/dist /app/dist\n"
+      "Dockerfile": "FROM node:22-alpine\nEXPOSE not-a-port\n"
     },
-    "command": "docker build --progress=plain -t devops-error-lab:case-16 .",
+    "command": "docker build --progress=plain -t task-ledger:new19 .",
+    "synthetic": true
+  },
+  {
+    "id": "20",
+    "title": "Docker COPY lacks destination argument",
+    "expected_category": "CONTAINER_CONFIGURATION_FAILURE",
+    "files": {
+      "Dockerfile": "FROM node:22-alpine\nCOPY src\n"
+    },
+    "command": "docker build --progress=plain -t task-ledger:new20 .",
     "synthetic": true
   }
 ]

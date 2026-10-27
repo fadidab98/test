@@ -1,13 +1,12 @@
 {
-  "name": "devops-error-lab",
+  "name": "task-ledger-new20",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=20"
   },
   "scripts": {
-    "build": "node scripts/build.js",
     "test": "node --test test/*.test.js",
     "start": "node src/main.js"
   }

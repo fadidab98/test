@@ -1,6 +1,10 @@
-import { mkdirSync, copyFileSync } from 'node:fs';
+import { readFileSync, mkdirSync, copyFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-for (const f of ['src/math.js', 'src/main.js']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});
-mkdirSync('dist', {recursive:true});
-for (const f of ['math.js', 'main.js']) copyFileSync('src/'+f, 'dist/'+f);
-console.log('Build complete');
+const config = JSON.parse(readFileSync('config/build.json','utf8'));
+if (!config || Array.isArray(config) || typeof config.output !== 'string') throw new Error('Build config requires an object with string output');
+if (config.format !== 'esm') throw new Error('Unsupported build output format: '+config.format);
+for (const file of ['src/ledger.js','src/main.js']) execFileSync(process.execPath,['--check',file],{stdio:'inherit'});
+mkdirSync(config.output,{recursive:true});
+for (const file of ['ledger.js','main.js']) copyFileSync('src/'+file,config.output+'/'+file);
+await import('../src/main.js');
+console.log('Ledger build finished');

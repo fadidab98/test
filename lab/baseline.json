@@ -1,9 +1,15 @@
 {
-  "package.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=22\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n",
-  "package-lock.json": "{\n  \"name\": \"devops-error-lab\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"devops-error-lab\",\n      \"version\": \"1.0.0\",\n      \"engines\": {\n        \"node\": \">=22\"\n      }\n    }\n  }\n}\n",
-  "src/math.js": "export function add(a, b) { return a + b; }\n",
-  "src/main.js": "import { add } from './math.js';\nconsole.log('Result:', add(2, 3));\n",
-  "test/math.test.js": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { add } from '../src/math.js';\ntest('adds numbers', () => assert.equal(add(2, 3), 5));\n",
-  "scripts/build.js": "import { mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nfor (const f of ['src/math.js', 'src/main.js']) execFileSync(process.execPath, ['--check', f], {stdio:'inherit'});\nmkdirSync('dist', {recursive:true});\nfor (const f of ['math.js', 'main.js']) copyFileSync('src/'+f, 'dist/'+f);\nconsole.log('Build complete');\n",
-  "Dockerfile": "FROM node:22-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci\nCOPY src ./src\nCOPY scripts ./scripts\nCOPY test ./test\nRUN npm test && npm run build\nCMD [\"node\", \"dist/main.js\"]\n"
+  "package.json": "{\n  \"name\": \"task-ledger-new20\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \">=20\"\n  },\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\",\n    \"test\": \"node --test test/*.test.js\",\n    \"start\": \"node src/main.js\"\n  }\n}\n",
+  "package-lock.json": "{\n  \"name\": \"task-ledger-new20\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"task-ledger-new20\",\n      \"version\": \"1.0.0\",\n      \"engines\": {\n        \"node\": \">=20\"\n      }\n    }\n  }\n}\n",
+  "src/ledger.js": "export function total(tasks) { return tasks.reduce((sum, task) => sum + task.hours, 0); }\n",
+  "src/main.js": "import { total } from './ledger.js';\nconsole.log('Planned hours:', total([{hours:2},{hours:3}]));\n",
+  "test/ledger.test.js": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { total } from '../src/ledger.js';\ntest('total work hours', () => assert.equal(total([{hours:2},{hours:3}]),5));\n",
+  "test/fixtures/tasks.json": "[{\"hours\":2},{\"hours\":3}]\n",
+  "test/reporter.js": "export default async function* reporter(source) { for await (const event of source) yield event.type + '\\n'; }\n",
+  "config/build.json": "{\"format\": \"esm\", \"output\": \"dist\"}",
+  "output-marker.txt": "This is a file, not a directory.\n",
+  "vendor/helper/package.json": "{\"name\":\"ledger-helper\",\"version\":\"1.0.0\"}\n",
+  "vendor/helper/index.js": "module.exports = {};\n",
+  "scripts/build.js": "import { readFileSync, mkdirSync, copyFileSync } from 'node:fs';\nimport { execFileSync } from 'node:child_process';\nconst config = JSON.parse(readFileSync('config/build.json','utf8'));\nif (!config || Array.isArray(config) || typeof config.output !== 'string') throw new Error('Build config requires an object with string output');\nif (config.format !== 'esm') throw new Error('Unsupported build output format: '+config.format);\nfor (const file of ['src/ledger.js','src/main.js']) execFileSync(process.execPath,['--check',file],{stdio:'inherit'});\nmkdirSync(config.output,{recursive:true});\nfor (const file of ['ledger.js','main.js']) copyFileSync('src/'+file,config.output+'/'+file);\nawait import('../src/main.js');\nconsole.log('Ledger build finished');\n",
+  "Dockerfile": "FROM node:22-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci\nCOPY src ./src\nCOPY scripts ./scripts\nCOPY config ./config\nCOPY test ./test\nCOPY output-marker.txt ./\nRUN npm test && npm run build\nCMD [\"node\",\"dist/main.js\"]\n"
 }

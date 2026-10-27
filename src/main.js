@@ -1,2 +1,2 @@
-import { add } from './math.js';
-console.log('Result:', add(2, 3));
+import { total } from './ledger.js';
+console.log('Planned hours:', total([{hours:2},{hours:3}]));
