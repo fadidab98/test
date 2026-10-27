@@ -7,7 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "cd absent-workspace && node build.js",
+    "build": "node scripts/build.js",
     "test": "node --test test/*.test.js",
     "start": "node src/main.js"
   }
