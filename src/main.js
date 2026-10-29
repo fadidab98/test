@@ -1,2 +1,2 @@
-import { total } from './ledger.js';
-console.log('Planned hours:', total([{hours:2},{hours:3}]));
+import { totalHours } from './ledger.js';
+console.log(`Total hours: ${totalHours([{hours: 2}, {hours: 3}])}`);

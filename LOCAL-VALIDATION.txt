@@ -1,0 +1,9 @@
+Local validation with Node v24.22.1 and npm 11.9.0
+baseline: confirmed; install=0, test=0, build=0
+01: confirmed; install=0, test=1
+02: confirmed; install=1
+03: confirmed; install=0, test=7
+04: confirmed; install=0, test=1
+repair: confirmed; install=0, test=0, build=0
+Bash syntax check passed.
+Docker node:22-alpine not executed here. Live platform classification, notification policy, suggestions and repair validation require testing on the user machine. No model result or automatic repair success is claimed.

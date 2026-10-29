@@ -1,1 +1,0 @@
-New Task Ledger project. Baseline npm ci/test/build passed locally with Node 24.22.1 and npm 11.9.0. All 18 non-Docker scenario commands returned nonzero. Bash syntax passed. Docker scenarios 19/20, Node 22 container behavior, Windows wrapper, Git publishing and platform integration not executed here. No repository was pushed.

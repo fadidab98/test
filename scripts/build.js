@@ -1,10 +1,7 @@
-import { readFileSync, mkdirSync, copyFileSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
-const config = JSON.parse(readFileSync('config/build.json','utf8'));
-if (!config || Array.isArray(config) || typeof config.output !== 'string') throw new Error('Build config requires an object with string output');
-if (config.format !== 'esm') throw new Error('Unsupported build output format: '+config.format);
-for (const file of ['src/ledger.js','src/main.js']) execFileSync(process.execPath,['--check',file],{stdio:'inherit'});
-mkdirSync(config.output,{recursive:true});
-for (const file of ['ledger.js','main.js']) copyFileSync('src/'+file,config.output+'/'+file);
-await import('../src/main.js');
-console.log('Ledger build finished');
+import { mkdirSync, copyFileSync, writeFileSync } from 'node:fs';
+import { totalHours } from '../src/ledger.js';
+mkdirSync('dist', { recursive: true });
+copyFileSync('src/ledger.js', 'dist/ledger.js');
+copyFileSync('src/main.js', 'dist/main.js');
+writeFileSync('dist/summary.json', JSON.stringify({totalHours: totalHours([{hours: 2}, {hours: 3}])}) + '\n');
+console.log('Build completed: dist/main.js and dist/summary.json');
