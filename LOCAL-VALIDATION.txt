@@ -1,9 +1,1 @@
-Local validation with Node v24.22.1 and npm 11.9.0
-baseline: confirmed; install=0, test=0, build=0
-01: confirmed; install=0, test=1
-02: confirmed; install=1
-03: confirmed; install=0, test=7
-04: confirmed; install=0, test=1
-repair: confirmed; install=0, test=0, build=0
-Bash syntax check passed.
-Docker node:22-alpine not executed here. Live platform classification, notification policy, suggestions and repair validation require testing on the user machine. No model result or automatic repair success is claimed.
+Node v24.22.1 / npm11.9.0. Baseline install/test/build passed. Fault npm ci failed with explicit EUSAGE and Invalid lock file is-number@6.0.0 does not satisfy is-number@7.0.0. Ran existing policy repair command npm install --package-lock-only --ignore-scripts --no-audit --no-fund, then original npm ci, 3 tests, build: passed. Restored baseline. Docker22 not run here. Actual platform automation still requires a live validation run. No platform files changed.

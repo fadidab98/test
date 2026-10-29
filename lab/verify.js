@@ -1,22 +1,21 @@
-import {spawnSync} from 'node:child_process';
-import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 const scenario=process.argv[2];
-if(!['baseline','repair','01','02','03','04'].includes(scenario)) throw new Error('Unknown scenario');
+if (!['baseline','fault','repair'].includes(scenario)) throw new Error('Invalid scenario');
 const npm=process.platform==='win32'?'npm.cmd':'npm';
-const plan=[['install',['ci','--no-audit','--no-fund']],['test',['test']],['build',['run','build']]];
+const steps=[['install',npm,['ci','--no-audit','--no-fund']],['test',npm,['test']],['build',npm,['run','build']]];
 const results=[];
-for(const [step,args] of plan){
- const run=spawnSync(npm,args,{encoding:'utf8',timeout:120000});
- const output=(run.stdout||'')+(run.stderr||'');process.stdout.write(output);
- results.push({step,exit_code:run.status??125,output,error:run.error?.message??null});
- if(results.at(-1).exit_code!==0) break;
+for (const [name,cmd,args] of steps) {
+  const run=spawnSync(cmd,args,{encoding:'utf8',timeout:120000});
+  const output=(run.stdout||'')+(run.stderr||'');
+  process.stdout.write(output);
+  const exit=run.status ?? 125;
+  results.push({step:name,exit_code:exit,output,error:run.error?.message||null});
+  if (exit!==0) break;
 }
-const last=results.at(-1);
-const expected={ '01':['test',"Identifier 'hours' has already been declared"], '02':['install','EINVALIDPACKAGENAME'], '03':['test','ERR_MODULE_NOT_FOUND'], '04':['test','ERR_ASSERTION'] }[scenario];
-let ok=expected ? last.step===expected[0] && last.exit_code!==0 && last.output.includes(expected[1]) && results.slice(0,-1).every(r=>r.exit_code===0) : results.length===3 && results.every(r=>r.exit_code===0);
-if(scenario==='03') ok=ok&&last.output.includes('absent-reporter.js');
-if(scenario==='04') ok=ok&&last.output.includes('99');
+const expectedFailure=scenario==='fault';
+const passed=expectedFailure ? results.length===1 && results[0].exit_code!==0 && results[0].output.includes('npm error code EUSAGE') && results[0].output.includes("npm error Invalid: lock file's is-number@6.0.0 does not satisfy is-number@7.0.0") : results.length===3 && results.every(item => item.exit_code===0);
 mkdirSync('results',{recursive:true});
-writeFileSync(`results/${scenario}.json`,JSON.stringify({scenario,node:process.version,expected_outcome_confirmed:ok,package_scripts:JSON.parse(readFileSync('package.json')).scripts,steps:results},null,2));
-console.log(`Expected outcome: ${ok?'CONFIRMED':'NOT CONFIRMED'}. Report: results/${scenario}.json`);
-process.exit(ok?0:1);
+writeFileSync(`results/${scenario}.json`,JSON.stringify({scenario,expectation_met:passed,node:process.version,build_command:JSON.parse(readFileSync('package.json')).scripts.build,steps:results},null,2));
+console.log(`Expected outcome: ${passed?'CONFIRMED':'NOT CONFIRMED'}. Report: results/${scenario}.json`);
+process.exit(passed?0:1);
