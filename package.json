@@ -7,7 +7,7 @@
     "node": ">=20 <25"
   },
   "scripts": {
-    "test": "node --test --test-reporter=./test/absent-reporter.js test/*.test.js",
+    "test": "node --test test/*.test.js",
     "build": "node scripts/build.js"
   }
 }
